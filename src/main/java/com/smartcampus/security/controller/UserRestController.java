@@ -1,8 +1,12 @@
 package com.smartcampus.security.controller;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.swagger.v3.oas.annotations.Hidden;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.smartcampus.security.jwt.JwtService;
 import com.smartcampus.security.model.ActivateModel;
 import com.smartcampus.security.model.CustomUserDetails;
@@ -26,16 +29,21 @@ import com.smartcampus.security.service.UserService;
 @RequestMapping("/api/v1/university")
 @CrossOrigin("*")
 public class UserRestController {
+	private static  final Logger logger = LoggerFactory.getLogger(UserRestController.class);
 	@Autowired
 	private UserService service;
 	@Autowired
 	private JwtService jwtService;
 
+	@Hidden
 	@PostMapping("/auth/register")
 	public ResponseEntity<?> createUser(@RequestBody CustomUserDetails user) {
 		try {
 			CustomUserDetails result = service.register(user);
-			System.out.println("User::"+result.getId());
+			logger.info("UserRestController:createUser, User DB ID::"+result.getId());
+			logger.info("UserRestController:createUser, User_ID::"+result.getUserId());
+			logger.info("UserRestController:createUser, User PWD::"+result.getPassword());
+			logger.info("UserRestController:createUser, User PRE_PWD::"+ Arrays.toString(result.getPreviousPassword().toArray()));
 			return ResponseEntity.status(HttpStatus.CREATED)
 					.body(Map.of("message", "User created successfully", "instruction", "Check your mail::"+result.getEmail()));
 		} catch (Exception e) {

@@ -1,9 +1,12 @@
 package com.smartcampus.admin.repository;
 
+import com.smartcampus.security.model.CustomUserDetails;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.smartcampus.admin.model.Admin;
 
-public interface AdminRepository extends MongoRepository<Admin, String> {
+import java.util.Optional;
 
+public interface AdminRepository extends MongoRepository<Admin, String> {
+    Optional<Admin> findByUserId(String userId);
 }

@@ -4,11 +4,11 @@ public class RandomPasswordGenerator {
     private static final String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
     private static final String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String DIGITS = "0123456789";
-    private static final String SPECIAL_CHARACTERS = "!@#$%^&*()_-+=<>?";
+    private static final String SPECIAL_CHARACTERS = "@#$%&";
 
     public static String generateRandomPassword(int length) {
-        if (length < 4) {
-            throw new IllegalArgumentException("Password length should be at least 4 characters");
+        if (length < 8) {
+            throw new IllegalArgumentException("Password length should be at least 8 characters");
         }
 
         SecureRandom random = new SecureRandom();

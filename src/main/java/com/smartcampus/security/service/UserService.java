@@ -1,7 +1,8 @@
 package com.smartcampus.security.service;
 
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,7 +23,6 @@ import com.smartcampus.security.model.CustomUserDetails;
 import com.smartcampus.security.model.LoginModel;
 import com.smartcampus.security.repository.UserRepository;
 
-import jakarta.mail.MessagingException;
 
 @Service
 public class UserService {
@@ -54,10 +54,11 @@ public class UserService {
 			} else {
 				// Generate a random password
 				String password = RandomPasswordGenerator.generateRandomPassword(15);
+				String encodePWD = passwordEncoder.encode(password);
 
 				// Set the generated password for the user
-				user.setPassword(passwordEncoder.encode(password));
-				user.setRandomPassword(passwordEncoder.encode(password));
+				user.setPassword(encodePWD);
+				user.setPreviousPassword(Collections.singletonList(encodePWD));
 				user.setAccountCreationDateTime(new ModelLocalDateTime(null));
 				if (user.getRole().equalsIgnoreCase("Teacher")) {
 					user.setAuthorities(Collections.singletonList("ROLE_TEACHER"));
@@ -72,6 +73,7 @@ public class UserService {
 				} else {
 					user.setAuthorities(Collections.singletonList("ROLE_USER"));
 				}
+				user.setAccountCreationDateTime(new ModelLocalDateTime(null));
 				CustomUserDetails savedUser = repository.save(user);
 
 				sendMail(user.getEmail(), user.getUsername(), user.getUserId(), password);
@@ -136,16 +138,20 @@ public class UserService {
 
 			if (passwordMatches) {
 				// Update the password fields
-				user.setPassword(passwordEncoder.encode(newPassword));
-				user.setRandomPassword(passwordEncoder.encode(newPassword));
+				String encodePWD = passwordEncoder.encode(newPassword);
+				user.setPassword(encodePWD);
+				List<String> previousPwd = user.getPreviousPassword();
+				previousPwd.add(encodePWD);
+				user.setPreviousPassword(previousPwd);
 				user.setEnabled(true);
 				user.setLastPasswordResetDate(new ModelLocalDateTime(null));
 
 				// Save the updated user details
-				repository.save(user);
+				CustomUserDetails userDetails = repository.save(user);
 
 				// Send notification email
 				sendMail(user.getEmail(), user.getUsername(), user.getUserId(), newPassword);
+				logger.info("UserService:updatePassword, Total Previous PWD::"+ Arrays.toString(userDetails.getPreviousPassword().toArray()));
 
 				return "Successfully updated";
 			} else {
@@ -165,9 +171,13 @@ public class UserService {
 			// Generate a sufficiently secure random password
 			String generateRandomPassword = RandomPasswordGenerator.generateRandomPassword(25);
 
+			String encodePWD = passwordEncoder.encode(generateRandomPassword);
+			user.setPassword(encodePWD);
 			// Update the user's password fields
 			user.setPassword(passwordEncoder.encode(generateRandomPassword));
-			user.setRandomPassword(passwordEncoder.encode(generateRandomPassword));
+			List<String> previousPwd = user.getPreviousPassword();
+			previousPwd.add(encodePWD);
+			user.setPreviousPassword(previousPwd);
 			user.setEnabled(true);
 			user.setLastPasswordResetDate(new ModelLocalDateTime(null));
 
@@ -291,16 +301,8 @@ public class UserService {
 			dto.setSubject("Account Credential");
 			dto.setHtmlString(modifiedContent);
 			dto.setTextBody("User Account Credentials");
-			try {
-				emailService.sendEmailWithAttachment(dto);
-				System.out.println("Mail sent::" + email);
-			} catch (MessagingException e) {
-				logger.error("Email send to fail::" + e.getCause());
-				e.printStackTrace();
-			} catch (IOException e) {
-				logger.error("Email send to fail::" + e.getCause());
-				e.printStackTrace();
-			}
+			emailService.sendEmailWithAttachment(dto);
+			System.out.println("Mail sent::" + email);
 		}
 
 	}

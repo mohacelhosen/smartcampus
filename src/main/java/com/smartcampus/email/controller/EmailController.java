@@ -32,15 +32,8 @@ public class EmailController {
     public String sendEmailWithAttachment(
             @ModelAttribute MailDto mailDto
     ) {
-        try {
-            emailService.sendEmailWithAttachment(mailDto);
-            return "Email sent successfully";
-        } catch (MessagingException e) {
-            System.out.println(e.getMessage());
-            return "Failed to send email";
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        emailService.sendEmailWithAttachment(mailDto);
+        return "Email sent successfully";
     }
 }
 

@@ -24,46 +24,83 @@ public class EmailService {
 	@Autowired
 	private JavaMailSender javaMailSender;
 
-	public void sendEmailWithAttachment(MailDto mailDto) throws MessagingException, IOException {
+	public void sendEmailWithAttachment(MailDto mailDto) {
 		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-		MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+		MimeMessageHelper mimeMessageHelper = null;
+		try {
+			mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+		} catch (MessagingException e) {
+			throw new RuntimeException(e);
+		}
 
 		if (mailDto.getAttachmentFiles() != null) {
 			// Handle multiple attachment files
 			for (MultipartFile attachmentFile : mailDto.getAttachmentFiles()) {
 				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-				FileCopyUtils.copy(attachmentFile.getInputStream(), outputStream);
+				try {
+					FileCopyUtils.copy(attachmentFile.getInputStream(), outputStream);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
 				byte[] attachmentBytes = outputStream.toByteArray();
 
-				mimeMessageHelper.addAttachment(Objects.requireNonNull(attachmentFile.getOriginalFilename()),
-						new ByteArrayResource(attachmentBytes));
+				try {
+					mimeMessageHelper.addAttachment(Objects.requireNonNull(attachmentFile.getOriginalFilename()),
+							new ByteArrayResource(attachmentBytes));
+				} catch (MessagingException e) {
+					throw new RuntimeException(e);
+				}
 			}
 		}
 
 		// Set from email properties
-		mimeMessageHelper.setFrom("mohacel.hosen@lynerp.com");
+		try {
+			mimeMessageHelper.setFrom("mohacel.hosen@lynerp.com");
+		} catch (MessagingException e) {
+			throw new RuntimeException(e);
+		}
 
 		// Set multiple recipients
 		for (String recipient : mailDto.getTo()) {
-			mimeMessageHelper.addTo(recipient);
+			try {
+				mimeMessageHelper.addTo(recipient);
+			} catch (MessagingException e) {
+				throw new RuntimeException(e);
+			}
 		}
 
 		// Set cc recipients
 		if (mailDto.getCc() != null) {
 			for (String ccRecipient : mailDto.getCc()) {
-				mimeMessageHelper.addCc(ccRecipient);
+				try {
+					mimeMessageHelper.addCc(ccRecipient);
+				} catch (MessagingException e) {
+					throw new RuntimeException(e);
+				}
 			}
 		}
 
 		// Set bcc recipients
 		if (mailDto.getBcc() != null) {
 			for (String bccRecipient : mailDto.getBcc()) {
-				mimeMessageHelper.addBcc(bccRecipient);
+				try {
+					mimeMessageHelper.addBcc(bccRecipient);
+				} catch (MessagingException e) {
+					throw new RuntimeException(e);
+				}
 			}
 		}
 
-		mimeMessageHelper.setSubject(mailDto.getSubject());
-		mimeMessageHelper.setText(mailDto.getTextBody(), mailDto.getHtmlString());
+		try {
+			mimeMessageHelper.setSubject(mailDto.getSubject());
+		} catch (MessagingException e) {
+			throw new RuntimeException(e);
+		}
+		try {
+			mimeMessageHelper.setText(mailDto.getTextBody(), mailDto.getHtmlString());
+		} catch (MessagingException e) {
+			throw new RuntimeException(e);
+		}
 
 		javaMailSender.send(mimeMessage);
 	}
