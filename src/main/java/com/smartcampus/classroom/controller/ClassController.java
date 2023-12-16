@@ -46,7 +46,7 @@ public class ClassController {
 		return new ResponseEntity<>(save, HttpStatus.OK);
 	}
 
-	@PostMapping("/")
+	@PostMapping("/class-info-by-id")
 //	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_BOARD_MEMBER', 'ROLE_DEVELOPER')")
 	public ResponseEntity<SingleClass> getSingleClassInfo(@RequestParam String sinlgeClassId) {
 		SingleClass save = singleClassService.findSingleClass(sinlgeClassId);
@@ -60,7 +60,7 @@ public class ClassController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@PostMapping
+	@PostMapping("/get-all-class")
 //	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DEVELOPER')")
 	public ResponseEntity<List<SingleClass>> getAllClasses() {
 		List<SingleClass> allClasses = singleClassService.getAllClasses();
@@ -81,7 +81,7 @@ public class ClassController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@GetMapping("/students/{classId}")
+	@GetMapping("/total-students/{classId}")
 //	@PreAuthorize("hasAnyRole('ROLE_TEACHER','ROLE_STUDENT', 'ROLE_ADMIN','ROLE_DEVELOPER')")
 	public ResponseEntity<List<StudentInfoForClassRoom>> singleClassStudents(@RequestParam String classId) {
 		List<StudentInfoForClassRoom> response = singleClassService.singleClassStudents(classId);
