@@ -12,7 +12,13 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/v1/university/**")
-                .allowedOrigins("http://localhost:9090", "https://campusmastermind.onrender.com", "http://campusmastermind.onrender.com")
+                .allowedOrigins("http://localhost:9090",
+                        "http://localhost:5171",
+                        "http://localhost:5172",
+                        "http://localhost:5173",
+                        "http://localhost:5174",
+                        "http://localhost:5175",
+                        "https://campusmastermind.onrender.com", "http://campusmastermind.onrender.com")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")
                 .allowCredentials(false);

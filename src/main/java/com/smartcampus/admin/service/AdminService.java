@@ -111,4 +111,8 @@ public class AdminService {
 		}
 	}
 
+	public List<Admin> allAdmin(){
+		return adminRepository.findAll();
+	}
+
 }

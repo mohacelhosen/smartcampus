@@ -25,6 +25,10 @@ public class SemesterService {
         }
     }
 
+    public Semester addCourseAndTeacherAndClass(String courseId, String teacherId, String classJoinCode){
+       return null;
+    }
+
     private boolean valid(Semester semester) {
         return semester != null && semester.getDepartmentName() != null && !semester.getDepartmentName().isEmpty()
                 && semester.getSemesterNumber() != null && semester.getSemesterNumber()>0

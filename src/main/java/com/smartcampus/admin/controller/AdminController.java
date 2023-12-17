@@ -2,6 +2,8 @@ package com.smartcampus.admin.controller;
 
 import com.smartcampus.admin.model.Admin;
 import com.smartcampus.admin.service.AdminService;
+import com.smartcampus.teacher.model.Teacher;
+import com.smartcampus.teacher.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
     @Autowired
     private AdminService adminService;
+    @Autowired
+    private TeacherService teacherService;
 
     @PostMapping("/admin/register")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
@@ -26,5 +30,11 @@ public class AdminController {
     public ResponseEntity<Admin> update(@RequestBody Admin admin){
         Admin registerAdmin = adminService.updateAdminInfo(admin);
         return new ResponseEntity<>(registerAdmin, HttpStatus.OK);
+    }
+    @PostMapping("/admin/update-teacher")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<Teacher> updateTeacher(@RequestParam String teacherRegistrationId,@RequestParam String teacherId, @RequestParam String password,@RequestParam String sectionName, @RequestParam String sectionCode){
+        Teacher addTeacherIdAndPassword = teacherService.addTeacherIdAndPassword( teacherRegistrationId,  teacherId,  password, sectionName, sectionCode);
+        return new ResponseEntity<>(addTeacherIdAndPassword, HttpStatus.OK);
     }
 }
