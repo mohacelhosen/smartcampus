@@ -20,6 +20,8 @@ import lombok.NoArgsConstructor;
 public class Department {
 	@Id
 	private String id;
+	private String departmentGroupName;
+	private String departmentGroupCode;
 	private String departmentName;
 	private String departmentShortName;
 	private String departmentCode;
