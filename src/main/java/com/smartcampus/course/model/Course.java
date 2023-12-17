@@ -1,5 +1,7 @@
 package com.smartcampus.course.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.smartcampus.common.ModelLocalDateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -18,4 +20,9 @@ public class Course {
 	private String courseCode;
 	private String courseCredits;
 	private Boolean courseOptional;
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	private ModelLocalDateTime createdDateTime;
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	private ModelLocalDateTime updateDateTime;
+	private String createdBy;
 }
