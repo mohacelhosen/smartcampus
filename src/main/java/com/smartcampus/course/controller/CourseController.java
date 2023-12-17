@@ -2,6 +2,7 @@ package com.smartcampus.course.controller;
 
 import com.smartcampus.common.ApiResponse;
 import com.smartcampus.common.ModelLocalDateTime;
+import com.smartcampus.common.RequestId;
 import com.smartcampus.course.model.Course;
 import com.smartcampus.course.service.CourseService;
 import com.smartcampus.exception.IncompleteDataException;
@@ -41,7 +42,7 @@ public class CourseController {
             );
 
             // Log successful registration
-            MDC.put("requestId", generateRequestId());
+            MDC.put("requestId", RequestId.generateRequestId());
             logger.info("CourseController::registerCourse, Successfully registered course. Course ID: {}, Title: {}, Timestamp: {}", registeredCourse.getId(), registeredCourse.getCourseTitle(), time);
 
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -88,7 +89,7 @@ public class CourseController {
             response.setStatus(HttpStatus.OK.value());
             response.setData(courseInfo);
 
-            MDC.put("requestId", generateRequestId());
+            MDC.put("requestId", RequestId.generateRequestId());
             logger.info("CourseController::updateCourseInfo, Successfully update course information. Course ID: {}, Title: {}, Timestamp: {}", course.getId(), course.getCourseTitle(), time);
 
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -114,7 +115,7 @@ public class CourseController {
             response.setStatus(HttpStatus.OK.value());
             response.setData(courseInfo);
 
-            MDC.put("requestId", generateRequestId());
+            MDC.put("requestId", RequestId.generateRequestId());
             logger.info("CourseController::getSingleCourseInfo, Successfully retriv course information. Course ID: {}, response: {}", courseId, courseInfo);
 
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -140,7 +141,7 @@ public class CourseController {
             response.setStatus(HttpStatus.OK.value());
             response.setData(courseInfo);
 
-            MDC.put("requestId", generateRequestId());
+            MDC.put("requestId", RequestId.generateRequestId());
             logger.info("CourseController::getSingleCourseInfoByCode, Successfully retriv course information. Course ID: {}, response: {}", courseCode, courseInfo);
 
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -163,7 +164,7 @@ public class CourseController {
         response.setMessage("Successfully retriv course information");
         response.setStatus(HttpStatus.OK.value());
         response.setData(courseInfo);
-        MDC.put("requestId", generateRequestId());
+        MDC.put("requestId", RequestId.generateRequestId());
         logger.info("CourseController::getAllCourseInfo,  Successfully retriv All course information. total course: {}", courseInfo.size());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -180,7 +181,7 @@ public class CourseController {
             String message = courseService.deleteCourseByCourseCode(courseCode);
             response.setData(message);
             response.setStatus(HttpStatus.OK.value());
-            MDC.put("requestId", generateRequestId());
+            MDC.put("requestId", RequestId.generateRequestId());
             logger.info("CourseController::deleteCourseByCourseCode,  Successfully delete course. course code: {}", courseCode);
 
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -194,7 +195,4 @@ public class CourseController {
         }
     }
 
-    private String generateRequestId() {
-        return String.valueOf(UUID.randomUUID().getMostSignificantBits()).replace("-", "");
-    }
 }
