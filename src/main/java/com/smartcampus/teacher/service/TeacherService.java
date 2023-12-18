@@ -131,6 +131,9 @@ public class TeacherService {
         return teacherOptional.get();
     }
 
+    public List<Teacher> findAllTeacher(){
+        return teacherRepository.findAll();
+    }
     @Transactional
     public String nextTeacherId() {
         List<Teacher> teacherList = teacherRepository.findAll();
