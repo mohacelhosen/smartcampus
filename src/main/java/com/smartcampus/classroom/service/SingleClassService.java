@@ -84,8 +84,8 @@ public class SingleClassService {
 				dbClass.setCrContact(updatedClass.getCrContact());
 			}
 
-			if (updatedClass.getReferencBooks() != null && !updatedClass.getReferencBooks().isEmpty()) {
-				dbClass.setReferencBooks(updatedClass.getReferencBooks());
+			if (updatedClass.getReferenceBooks() != null && !updatedClass.getReferenceBooks().isEmpty()) {
+				dbClass.setReferenceBooks(updatedClass.getReferenceBooks());
 			}
 
 			if (updatedClass.getClassObjectives() != null && !updatedClass.getClassObjectives().isEmpty()) {

@@ -36,7 +36,7 @@ public class SingleClass {
 	private Integer totalStudent;
 	private List<Notes> teacherLectureSheets;
 	private List<ContactInfo> crContact;// name & contactNumber
-	private List<Books> referencBooks;
+	private List<Books> referenceBooks;
 	private List<Objective> classObjectives;
 	private String classLink;
 	private Set<StudentInfoForClassRoom> students;

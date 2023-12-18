@@ -42,7 +42,7 @@ public class DepartmentController {
 
             // Log successful registration
             MDC.put("requestId", RequestId.generateRequestId());
-            logger.info("CourseController::registerCourse, Successfully registered course.Timestamp: {}, Department ID: {}, Title: {}, ", time, department.getId(), department.getDepartmentName());
+            logger.info("DepartmentController::register, Successfully registered course.Timestamp: {}, Department ID: {}, Title: {}, ", time, department.getId(), department.getDepartmentName());
 
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (IncompleteDataException e) {

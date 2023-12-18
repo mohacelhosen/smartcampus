@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.smartcampus.common.GeneralConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,17 +62,17 @@ public class UserService {
 				user.setPreviousPassword(Collections.singletonList(encodePWD));
 				user.setAccountCreationDateTime(new ModelLocalDateTime(null));
 				if (user.getRole().equalsIgnoreCase("Teacher")) {
-					user.setAuthorities(Collections.singletonList("ROLE_TEACHER"));
+					user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_TEACHER));
 				} else if (user.getRole().equalsIgnoreCase("Student")) {
-					user.setAuthorities(Collections.singletonList("ROLE_STUDENT"));
+					user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_STUDENT));
 				} else if (user.getRole().equalsIgnoreCase("Staff")) {
-					user.setAuthorities(Collections.singletonList("ROLE_STAFF"));
+					user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_STAFF));
 				} else if (user.getRole().equalsIgnoreCase("Admin")) {
-					user.setAuthorities(Collections.singletonList("ROLE_ADMIN"));
+					user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_ADMIN));
 				} else if (user.getRole().equalsIgnoreCase("BoardMember")) {
-					user.setAuthorities(Collections.singletonList("ROLE_BOARD_MEMBER"));
+					user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_BOARD_MEMBER));
 				} else {
-					user.setAuthorities(Collections.singletonList("ROLE_USER"));
+					user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_GUEST));
 				}
 				user.setAccountCreationDateTime(new ModelLocalDateTime(null));
 				CustomUserDetails savedUser = repository.save(user);

@@ -13,6 +13,5 @@ public class EducationalQualification {
     private String institution;     // Educational institution where the qualification was earned
     private String completionYear;  // Year of qualification completion
     private String honors;          // Any honors or distinctions (optional)
-    private String educationalQualificationUploadId;
+    private String eduQualDocumentId; // Shortened name for educational qualification document upload ID
 }
-

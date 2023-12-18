@@ -1,7 +1,9 @@
 package com.smartcampus.teacher.service;
 
 import com.smartcampus.admin.model.Admin;
+import com.smartcampus.admin.repository.AdminRepository;
 import com.smartcampus.admin.service.AdminService;
+import com.smartcampus.common.GeneralConstants;
 import com.smartcampus.common.ModelLocalDateTime;
 import com.smartcampus.common.RequestId;
 import com.smartcampus.email.dto.MailDto;
@@ -14,6 +16,7 @@ import com.smartcampus.teacher.repository.TeacherRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,7 +33,7 @@ public class TeacherService {
     @Autowired
     private EmailService emailService;
     @Autowired
-    private AdminService adminService;
+    private AdminRepository adminRepository;
 
     public Teacher registerTeacher(Teacher teacher){
         Optional<Teacher> teacherOptional = teacherRepository.findById(teacher.getEmail());
@@ -43,7 +46,7 @@ public class TeacherService {
         String userEmail = teacher.getEmail();
         String userRegistrationId = teacher.getRegistrationId();
 
-        List<Admin> adminList = adminService.allAdmin();
+        List<Admin> adminList = adminRepository.findAll();
 
         String registrationContent = replaceHtmlContent("teacher-registration", userName, userEmail, userRegistrationId);
         sendMail("Teacher Registration "+teacher.getRegistrationId(),teacher.getEmail(), registrationContent);
@@ -55,16 +58,23 @@ public class TeacherService {
         return teacherRepository.save(teacher);
     }
 
-    public Teacher addTeacherIdAndPassword(String teacherRegistrationId, String teacherId, String password, String sectionName, String sectionCode){
+    public Teacher approveTeacher(String teacherRegistrationId, String teacherId, String roles, String sectionName, String sectionCode, String approveStatus,  Boolean accountEnabled, String approveByAdminId, String approveByAdminName){
         Optional<Teacher> teacherOptional = teacherRepository.findByRegistrationId(teacherRegistrationId);
         if (teacherOptional.isEmpty()){
             throw  new NotFoundException("Teacher not Found, Registration Id: "+teacherRegistrationId);
         }
         Teacher teacher = teacherOptional.get();
         teacher.setTeacherId(teacherId);
-        teacher.setPassword(password);
+        teacher.setRoles(roles);
         teacher.setSectionName(sectionName);
         teacher.setSectionCode(sectionCode);
+        teacher.setApproveStatus(approveStatus);
+        teacher.setAccountEnabled(accountEnabled);
+        teacher.setApproveByAdminId(approveByAdminId);
+        teacher.setApproveByAdminName(approveByAdminName);
+        if(approveStatus.equalsIgnoreCase("APPROVE")){
+            teacher.setConfirmationDate(new ModelLocalDateTime(null));
+        }
         return teacherRepository.save(teacher);
     }
     public Teacher updateTeacherBasicInfo(Teacher teacher){
@@ -105,7 +115,7 @@ public class TeacherService {
         return teacherOptional.get();
     }
 
-    public Teacher findById(String id){
+    public Teacher findTeacherById(String id){
         Optional<Teacher> teacherOptional = teacherRepository.findById(id);
         if (teacherOptional.isEmpty()){
             throw  new NotFoundException("Teacher not Found, BD ID: "+id);
@@ -113,13 +123,27 @@ public class TeacherService {
         return teacherOptional.get();
     }
 
-    public Teacher findByTeacherId(String teacherId){
+    public Teacher findTeacherByTeacherId(String teacherId){
         Optional<Teacher> teacherOptional = teacherRepository.findByTeacherId(teacherId);
         if (teacherOptional.isEmpty()){
             throw  new NotFoundException("Teacher not Found, teacher ID: "+teacherId);
         }
         return teacherOptional.get();
     }
+
+    @Transactional
+    public String nextTeacherId() {
+        List<Teacher> teacherList = teacherRepository.findAll();
+
+        int maxTeacherId = teacherList.stream()
+                .mapToInt(teacher -> Integer.parseInt(teacher.getTeacherId()))
+                .max()
+                .orElse(GeneralConstants.TEACHER_INITIAL_ACADEMIC_ID);
+
+        return String.valueOf(maxTeacherId+1 );
+    }
+
+
     private void sendMail(String subject, String userEmail, String htmlContent){
         MailDto dto = new MailDto();
         dto.setSubject(subject);

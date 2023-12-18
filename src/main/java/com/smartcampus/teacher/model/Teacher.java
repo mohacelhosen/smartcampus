@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.smartcampus.common.CurrentAddress;
 import com.smartcampus.common.ModelLocalDateTime;
 import com.smartcampus.common.PermanentAddress;
+import com.smartcampus.course.model.Course;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
+
 
 @Data
 @NoArgsConstructor
@@ -24,10 +25,14 @@ public class Teacher {
     private String id;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String registrationId;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String teacherId;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String roles;
     private String designation;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String sectionName; // admission
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String sectionCode; // admission-401
     private String userPhotoId;
     private String photoUrl;
@@ -45,13 +50,13 @@ public class Teacher {
     private String religion;
     private String birthPlace;
     private String maritalStatus;
-    private String status;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String approveStatus;
     private String bloodGroup;
     private String email;
     private String nidNumber;
     private CurrentAddress currentAddress;
     private PermanentAddress permanentAddress;
-    private Map<String, String> documents;
 
     // Educational Qualifications
     private List<EducationalQualification> educationalQualifications;
@@ -60,7 +65,7 @@ public class Teacher {
     private List<Certification> certifications;
 
     // Teaching Subjects
-    private List<String> teachingSubjects;
+    private List<Course> teachingSubjects;
 
     // Languages Spoken
     private List<String> languagesSpoken;
@@ -88,10 +93,17 @@ public class Teacher {
 
     // References
     private List<Reference> references;
-
-    private String password;
     @JsonIgnore
-    private boolean isEnabled = false;
+    private boolean accountEnabled = false;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private ModelLocalDateTime createdDate = new ModelLocalDateTime(null);
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private ModelLocalDateTime updatedDate;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String approveByAdminId;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String approveByAdminName;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private ModelLocalDateTime confirmationDate;
+
 }
