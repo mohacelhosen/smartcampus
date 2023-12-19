@@ -160,10 +160,10 @@ public class TeacherService {
         Path path = Paths.get(filePath);
         try{
             String originalContent = Files.readString(path);
-            originalContent = originalContent.replace("##userName##",userName);
-            originalContent = originalContent.replace("##userEmail##",userEmail);
-            originalContent = originalContent.replace("##userName##",userName);
-            return originalContent.replace("##userRegistrationId##",userRegistrationId);
+            originalContent = originalContent.replace("[|###userName###|]",userName);
+            originalContent = originalContent.replace("[|#userEmail#|]",userEmail);
+            originalContent = originalContent.replace("[|#userName#|]",userName);
+            return originalContent.replace("[|#userRegistrationId#|]",userRegistrationId);
 
         } catch (IOException e) {
             throw new RuntimeException("Error occurred during file content reading");
