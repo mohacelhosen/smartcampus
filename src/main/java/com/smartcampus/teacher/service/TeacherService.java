@@ -150,6 +150,7 @@ public class TeacherService {
     private void sendMail(String subject, String userEmail, String htmlContent){
         MailDto dto = new MailDto();
         dto.setSubject(subject);
+        dto.setTextBody("Smart campus");
         dto.setTo(Collections.singletonList(userEmail));
         dto.setHtmlString(htmlContent);
         emailService.sendEmailWithAttachment(dto);

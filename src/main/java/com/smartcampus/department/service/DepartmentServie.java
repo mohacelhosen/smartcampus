@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,39 +39,42 @@ public class DepartmentServie {
     }
 
     @Transactional
-    public Department addCourseInDepartment(String departmentCode, Course course) {
+    public Department addCourseInDepartment(String departmentCode, String courseCode) {
         Optional<Department> optionalDepartment = departmentRepository.findByDepartmentCode(departmentCode);
 
         if (optionalDepartment.isEmpty()) {
             throw new NotFoundException("Invalid department code: " + departmentCode);
         }
 
+        Course dbCourse = courseService.findByCourseCode(courseCode);
+        if (dbCourse == null) {
+            throw new NotFoundException("Attempted to add a non-registered course to the department");
+        }
+
         Department dbDepartment = optionalDepartment.get();
 
         List<Course> courseList = dbDepartment.getCourseList();
-
-        Course dbCourse = courseService.findByCourseId(course.getId());
-        if (dbCourse == null){
-            throw  new NotFoundException("Attempted to add a non-registered course to the department");
-        }
-
-        boolean alreadyPresent = courseList.stream()
-                .anyMatch(singleCourse -> singleCourse.getCourseCode().equalsIgnoreCase(course.getCourseCode()));
-
-        if (alreadyPresent) {
-            throw new AlreadyExistsException("This course Already Exist, Course Code: "+course.getCourseCode());
+        if (courseList == null ||courseList.isEmpty()) {
+            courseList = new ArrayList<>();
+            dbDepartment.setCourseList(courseList);
         } else {
-            courseList.add(course);
+            boolean alreadyPresent = courseList.stream().anyMatch(singleCourse -> singleCourse.getCourseCode().equalsIgnoreCase(courseCode));
+
+            if (alreadyPresent) {
+                throw new AlreadyExistsException("This course Already Exist, Course Code: " + courseCode);
+            } else {
+                courseList.add(dbCourse);
+            }
         }
 
         departmentRepository.save(dbDepartment);
         return dbDepartment;
     }
 
-    public Department updateDepartmentInfo(String departmentCode, Department department){
+    public Department updateDepartmentInfo(String departmentCode, Department department) {
         Optional<Department> departmentOptional = departmentRepository.findByDepartmentCode(departmentCode);
-        if (departmentOptional.isEmpty()){
-            throw  new NotFoundException("Invalid Department Id");
+        if (departmentOptional.isEmpty()) {
+            throw new NotFoundException("Invalid Department Id");
         }
         Department dbDepartment = departmentOptional.get();
         dbDepartment.setDepartmentName(dbDepartment.getDepartmentName());
@@ -81,23 +85,20 @@ public class DepartmentServie {
         return departmentRepository.save(department);
     }
 
-    public Department findByDepartmentId(String departmentId){
-        return departmentRepository.findById(departmentId).orElseThrow(() -> new NotFoundException("Invalid department departmentCode: "+departmentId));
+    public Department findByDepartmentId(String departmentId) {
+        return departmentRepository.findById(departmentId).orElseThrow(() -> new NotFoundException("Invalid department departmentCode: " + departmentId));
     }
 
     public Department findByDepartmentCode(String departmentCode) {
-         return departmentRepository.findByDepartmentCode(departmentCode).orElseThrow( ()-> new NotFoundException("Invalid department departmentCode: "+departmentCode));
+        return departmentRepository.findByDepartmentCode(departmentCode).orElseThrow(() -> new NotFoundException("Invalid department departmentCode: " + departmentCode));
     }
 
-    public List<Department> findAllDepartment(){
+    public List<Department> findAllDepartment() {
         return departmentRepository.findAll();
     }
 
     private boolean valid(Department department) {
-        return department != null && department.getDepartmentName() != null && !department.getDepartmentName().isEmpty()
-                && department.getDepartmentShortName() != null && !department.getDepartmentShortName().isEmpty()
-                && department.getDepartmentCode() != null && !department.getDepartmentCode().isEmpty()
-                && !codeExists(department.getDepartmentCode());
+        return department != null && department.getDepartmentName() != null && !department.getDepartmentName().isEmpty() && department.getDepartmentShortName() != null && !department.getDepartmentShortName().isEmpty() && department.getDepartmentCode() != null && !department.getDepartmentCode().isEmpty() && !codeExists(department.getDepartmentCode());
     }
 
     private boolean codeExists(String code) {

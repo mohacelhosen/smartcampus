@@ -86,13 +86,13 @@ public class DepartmentController {
     }
 
     @PutMapping("/add-course")
-    public ResponseEntity<ApiResponse<Department>> addCourseInDepartment(@RequestParam String departmentCode, @RequestBody Course course) {
+    public ResponseEntity<ApiResponse<Department>> addCourseInDepartment(@RequestParam String departmentCode, @RequestParam String courseCode) {
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         ApiResponse<Department> response = new ApiResponse<>();
         response.setTimestamp(time);
         response.setEndpoint("/api/v1/university/department/add-course");
         try {
-            Department departmentInfo = departmentServie.addCourseInDepartment(departmentCode, course);
+            Department departmentInfo = departmentServie.addCourseInDepartment(departmentCode, courseCode);
             response.setStatus(HttpStatus.OK.value());
             response.setMessage(" Successfully added course in department");
             response.setData(departmentInfo);
@@ -101,7 +101,7 @@ public class DepartmentController {
             response.setStatus(HttpStatus.NOT_FOUND.value());
             response.setMessage(e.getMessage());
             response.setData(null);
-            logger.error("DepartmentController::updateDepartmentInfo, Error updating the Department information due to Invalid department Code.Department Code:{},  Input Course: {}, Message: {}", departmentCode, course, e.getMessage(), e);
+            logger.error("DepartmentController::updateDepartmentInfo, Error updating the Department information due to Invalid department Code.Department Code:{},  Input Course: {}, Message: {}", departmentCode, courseCode, e.getMessage(), e);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }
