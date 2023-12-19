@@ -228,4 +228,8 @@ public class AdminService {
         emailService.sendEmailWithAttachment(dto);
     }
 
+    public List<Admin> showAllAdmin(){
+        return adminRepository.findAll();
+    }
+
 }

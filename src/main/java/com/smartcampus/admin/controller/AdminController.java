@@ -22,6 +22,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/university")
 @CrossOrigin("*")
@@ -142,6 +144,19 @@ public class AdminController {
             logger.error("AdminController::deleteTeacher, Teacher not found .Timestamp:{}, Input: {}, Message: {}", time, registrationId, e.getMessage(), e);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping("/show-all-admin")
+    public ResponseEntity<ApiResponse<List<Admin>>> showAllAdmin(){
+        String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
+        ApiResponse<List<Admin>> response = new ApiResponse<>();
+        response.setTimestamp(time);
+        response.setEndpoint("/api/v1/university/admin/show-all-admin");
+        List<Admin> adminList = adminService.showAllAdmin();
+        response.setMessage("Successfully retrieve all the admin info");
+        response.setData(adminList);
+        response.setStatus(HttpStatus.OK.value());
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }
