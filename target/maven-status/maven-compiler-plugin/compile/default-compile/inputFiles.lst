@@ -1,138 +1,141 @@
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\service\AssignmentService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\department\model\Department.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\common\RequestId.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\email\dto\ByteArrayFile.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\semester\controller\SemesterController.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\course\repository\CourseRepository.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\additional\repository\TeacherStuffSectionRepository.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\security\jwt\JwtService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\admin\model\TeacherApprove.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\email\common\EmailUtil.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\security\config\SecurityConfig.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\security\service\UserService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\model\StudentAttendance.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\email\dto\DataSet.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\course\service\CourseService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\common\RandomPasswordGenerator.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\common\CurrentAddress.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\common\GeneralConstants.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\filemngt\model\Audio.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\Student\model\MedicalInformation.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\filemngt\service\PhotoService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\Student\model\ResidenceHallInformation.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\security\model\CustomUserDetails.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\admin\service\AdminService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\email\dto\MailDto.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\exception\AlreadyExistsException.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\repoository\ExamRepo.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\email\service\EmailService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\model\StudentInfoForClassRoom.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\controller\ClassController.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\model\SingleClass.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\security\controller\UserRestController.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\library\model\BorrowingBook.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\busTracking\repository\BusTrackingRepo.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\semester\model\Semester.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\teacher\model\TeachingExperience.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\exception\ExceptionModel.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\exception\ResourceNotFoundException.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\filemngt\model\Photo.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\library\model\LibraryCardInformation.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\common\PermanentAddress.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\filemngt\model\CommonFile.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\filemngt\service\VideoService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\model\Submission.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\exception\TokenValidationException.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\busTracking\service\BusTrackingService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\Student\model\StudentEntity.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\model\Exam.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\teacher\model\EducationalQualification.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\busTracking\controller\BustrackingController.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\library\repository\LibraryCardInformationRepo.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\SmartcampusApplication.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\admin\model\Admin.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\Student\service\StudentService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\library\service\LibraryService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\Student\model\UserInfo.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\common\ModelLocalDateTime.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\Student\model\Semester.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\common\CustomUserObj.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\exception\IncompleteDataException.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\Student\model\PreviousEducation.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\model\Assignment.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\security\model\ActivateModel.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\exception\InvalidRequestException.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\filemngt\service\CommonFileService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\exception\IncompleteUserInfoException.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\semester\model\CourseAndTeacherAndClass.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\semester\repository\SemesterRepository.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\model\Notes.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\Student\repository\StudentRepository.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\teacher\repository\TeacherRepository.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\model\JoinInClass.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\security\model\LoginModel.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\course\model\Course.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\Student\model\LocalGuardian.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\service\AttendanceService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\security\repository\UserRepository.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\filemngt\controller\AudioController.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\common\IdGenerator.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\Student\model\InternationalStudentInformation.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\teacher\service\TeacherService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\filemngt\controller\VideoController.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\teacher\model\EmergencyContact.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\security\config\WebConfig.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\exception\GlobalExceptionHandler.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\Student\model\StudentBillingAndFinancialInformation.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\Student\model\StudyPlan.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\Student\controller\StudentController.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\teacher\controller\TeacherController.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\security\jwt\JwtAuthFilter.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\department\controller\DepartmentController.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\model\Objective.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\library\controller\LibraryCardInformationController.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\course\controller\CourseController.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\teacher\model\Reference.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\service\SingleClassService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\controller\AssignmentController.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\library\model\Books.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\common\CopyObject.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\common\ApiResponse.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\teacher\model\Teacher.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\exception\NotFoundException.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\exception\UserNotRegisterException.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\Student\model\ResponseStudentModel.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\controller\AttendanceController.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\filemngt\model\Video.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\filemngt\service\AudioService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\repoository\AssignmentRepository.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\email\dto\MailDto2.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\admin\controller\AdminController.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\additional\service\TeacherStuffSectionService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\exception\CustomException.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\filemngt\controller\PhotoController.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\model\ContactInfo.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\filemngt\controller\CommonFileController.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\additional\model\TeacherStuffSection.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\model\Attendance.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\exception\IllegalArgument.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\semester\service\SemesterService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\teacher\model\Publication.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\department\repository\DepartmentRepository.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\email\config\MailConfig.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\admin\repository\AdminRepository.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\security\service\CustomUserDetailsService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\Student\model\ParentInfo.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\repoository\AttendanceRepo.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\controller\ExamController.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\filemngt\repository\PhotoRepository.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\Student\model\ScholarshipsAndFinancialAid.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\department\service\DepartmentServie.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\repoository\SingleClassRepository.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\classroom\service\ExamService.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\Student\model\ExtracurricularActivities.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\teacher\model\Certification.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\teacher\model\AcademicAdvisor.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\busTracking\model\BusTracking.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\email\controller\EmailController.java
-M:\smartcampus\smartcampus\src\main\java\com\smartcampus\exception\UserNotFoundException.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\exception\IncompleteDataException.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Student\model\StudyPlan.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\common\ApiResponse.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\teacher\model\Teacher.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\controller\ClassController.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\busTracking\controller\BustrackingController.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\exception\AlreadyExistsException.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\filemngt\repository\PhotoRepository.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\security\model\CustomUserDetails.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Student\model\ScholarshipsAndFinancialAid.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\exception\ResourceNotFoundException.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\exception\TokenValidationException.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\busTracking\repository\BusTrackingRepo.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\model\StudentAttendance.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\security\jwt\JwtAuthFilter.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\exception\ExceptionModel.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\common\IdGenerator.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\course\controller\CourseController.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\security\model\LoginModel.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\filemngt\controller\VideoController.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\filemngt\model\Video.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\exception\UserNotRegisterException.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\additional\service\TeacherStuffSectionService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\repoository\ExamRepo.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\semester\controller\SemesterController.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Student\model\UserInfo.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\filemngt\model\CommonFile.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\security\service\CustomUserDetailsService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Student\model\InternationalStudentInformation.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\teacher\model\Publication.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\additional\repository\TeacherStuffSectionRepository.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\library\model\LibraryCardInformation.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\security\repository\UserRepository.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\email\dto\MailDto.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\teacher\model\Reference.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\exception\NotFoundException.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\department\model\Department.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\additional\model\TeacherStuffSection.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\model\Submission.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\teacher\model\EducationalQualification.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\library\controller\LibraryCardInformationController.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\model\JoinInClass.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\model\SingleClass.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\common\ModelLocalDateTime.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\teacher\service\TeacherService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\email\dto\MailDto2.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Student\model\LocalGuardian.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Student\model\MedicalInformation.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\email\controller\EmailController.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\email\dto\ByteArrayFile.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\email\service\EmailService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\controller\ExamController.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\controller\AssignmentController.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\common\RequestId.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\course\repository\CourseRepository.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\common\CopyObject.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\teacher\repository\TeacherRepository.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\busTracking\service\BusTrackingService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\email\common\EmailUtil.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\common\PermanentAddress.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\filemngt\controller\PhotoController.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\library\repository\LibraryCardInformationRepo.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\admin\controller\AdminController.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\filemngt\model\Audio.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Student\model\StudentEntity.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\admin\repository\AdminRepository.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\model\Exam.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\teacher\model\Certification.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Student\model\Semester.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Student\model\ExtracurricularActivities.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\admin\model\Admin.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Student\controller\StudentController.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\teacher\controller\TeacherController.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\filemngt\controller\CommonFileController.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\exception\IncompleteUserInfoException.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\security\controller\UserRestController.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\department\service\DepartmentServie.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\test\AsaduTest.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\repoository\AttendanceRepo.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Student\model\PreviousEducation.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\common\CustomUserObj.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\email\dto\DataSet.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\semester\model\Semester.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\filemngt\service\VideoService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\service\AssignmentService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Student\repository\StudentRepository.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\exception\CustomException.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\security\jwt\JwtService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\model\StudentInfoForClassRoom.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\admin\model\TeacherApprove.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\repoository\SingleClassRepository.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\semester\service\SemesterService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\model\Assignment.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\department\repository\DepartmentRepository.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\common\GeneralConstants.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\exception\GlobalExceptionHandler.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Student\model\ResponseStudentModel.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\exception\InvalidRequestException.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\course\service\CourseService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\filemngt\service\PhotoService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\model\Objective.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\security\config\SecurityConfig.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\exception\UserNotFoundException.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\SmartcampusApplication.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\filemngt\controller\AudioController.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\common\RandomPasswordGenerator.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Student\model\ResidenceHallInformation.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\busTracking\model\BusTracking.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\semester\repository\SemesterRepository.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\model\Notes.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\controller\AttendanceController.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\library\model\BorrowingBook.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\model\Attendance.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\semester\model\CourseAndTeacherAndClass.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\admin\service\AdminService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Student\model\StudentBillingAndFinancialInformation.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\service\ExamService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\filemngt\model\Photo.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\security\service\UserService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\service\AttendanceService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\service\SingleClassService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\filemngt\service\AudioService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\library\service\LibraryService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Student\service\StudentService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\teacher\model\TeachingExperience.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\repoository\AssignmentRepository.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\teacher\model\AcademicAdvisor.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\exception\IllegalArgument.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Student\model\ParentInfo.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\security\config\WebConfig.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\admin\model\StudentApprove.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\model\ContactInfo.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\security\model\ActivateModel.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\teacher\model\EmergencyContact.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\email\config\MailConfig.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\department\controller\DepartmentController.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\library\model\Books.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\common\HtmlContentReplace.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\common\CurrentAddress.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\course\model\Course.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\filemngt\service\CommonFileService.java

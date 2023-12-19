@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.smartcampus.common.GeneralConstants;
+import com.smartcampus.common.HtmlContentReplace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,9 +77,9 @@ public class UserService {
 				}
 				user.setAccountCreationDateTime(new ModelLocalDateTime(null));
 				CustomUserDetails savedUser = repository.save(user);
-
 				sendMail(user.getEmail(), user.getUsername(), user.getUserId(), password);
 
+				savedUser.setPassword(password);
 				// Return the saved user
 				return savedUser;
 			}

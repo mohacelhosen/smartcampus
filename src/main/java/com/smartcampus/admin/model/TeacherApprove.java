@@ -14,8 +14,8 @@ public class TeacherApprove {
     private String roles;
     private String sectionName;
     private String sectionCode;
-    private String approveStatus;
     private Boolean accountEnabled;
     private String approveByAdminId;
     private String approveByAdminName;
+    private String applicationStatus;
 }

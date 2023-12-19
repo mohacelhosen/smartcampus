@@ -38,6 +38,9 @@ public class StudentEntity {
 	private String studentPhotoId;
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private String studentPhotoUrl;
+
+	private String departmentCode;
+	private Integer semesterNumber;
 	@NonNull
 	private String firstName;
 	private String lastName;
@@ -79,7 +82,7 @@ public class StudentEntity {
 	private String comment;
 	private Boolean agreeTermsCondition;
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	private String admissionStatus;
+	private String applicationStatus;
 	@JsonIgnore
 	private boolean isEnabled = false;
 	@JsonIgnore

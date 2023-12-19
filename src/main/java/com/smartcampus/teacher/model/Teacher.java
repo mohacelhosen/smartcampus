@@ -51,7 +51,7 @@ public class Teacher {
     private String birthPlace;
     private String maritalStatus;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private String approveStatus;
+    private String applicationStatus;
     private String bloodGroup;
     private String email;
     private String nidNumber;
