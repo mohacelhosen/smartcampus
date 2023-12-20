@@ -12,4 +12,13 @@ public class GeneralConstants {
     public static final String ROLE_BOARD_MEMBER = "ROLE_BOARD_MEMBER";
     public static final String ROLE_GUEST = "ROLE_GUEST";
 
+
+    /*** Announcement type ***/
+    public  static  final String CLASS_ANNOUNCEMENT = "CLASS_ANNOUNCEMENT";
+    public  static  final String EVENT_ANNOUNCEMENT = "EVENT_ANNOUNCEMENT";
+    public  static  final String HOLIDAY_ANNOUNCEMENT = "HOLIDAY_ANNOUNCEMENT";
+    public  static  final String OFFICIAL_ANNOUNCEMENT = "OFFICIAL_ANNOUNCEMENT";
+    public  static  final String TEACHER_ANNOUNCEMENT = "TEACHER_ANNOUNCEMENT";
+
+
 }

@@ -2,6 +2,10 @@ package com.smartcampus.classroom.controller;
 
 import java.util.List;
 
+import com.smartcampus.classroom.model.ClassAnnouncement;
+import com.smartcampus.classroom.service.ClassAnnouncementService;
+import com.smartcampus.common.ApiResponse;
+import com.smartcampus.common.ModelLocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +29,8 @@ public class ClassController {
 	@Autowired
 	private SingleClassService singleClassService;
 
+	@Autowired
+	private ClassAnnouncementService classAnnouncementService;
 	@PostMapping("/register")
 //	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_TEACHER', 'ROLE_DEVELOPER')")
 	public ResponseEntity<SingleClass> registerSingleClass(@RequestBody SingleClass sinlgeClass) {
@@ -85,6 +91,28 @@ public class ClassController {
 //	@PreAuthorize("hasAnyRole('ROLE_TEACHER','ROLE_STUDENT', 'ROLE_ADMIN','ROLE_DEVELOPER')")
 	public ResponseEntity<List<StudentInfoForClassRoom>> singleClassStudents(@RequestParam String classId) {
 		List<StudentInfoForClassRoom> response = singleClassService.singleClassStudents(classId);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@PostMapping("/create-class-announcement")
+	public ResponseEntity<ApiResponse<ClassAnnouncement>> createAnnouncement(@RequestBody ClassAnnouncement classAnnouncement) {
+		String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
+		ClassAnnouncement createdAnnouncement = classAnnouncementService.createAnnouncement(
+				classAnnouncement.getTeacherAcademicId(),
+				classAnnouncement.getDepartmentCode(),
+				classAnnouncement.getSemesterNumber(),
+				classAnnouncement.getCourseCode(),
+				classAnnouncement.getClassStartSession()
+		);
+		ApiResponse<ClassAnnouncement> response = new ApiResponse<>(200, "Announcement created successfully", createdAnnouncement,time, "/api/v1/university/classroom/create-class-announcement");
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@PostMapping("/get-class-announcement")
+	public ResponseEntity<ApiResponse<List<ClassAnnouncement>>> getAllAnnouncement(@RequestParam String departmentCode, @RequestParam Integer semesterNumber) {
+		String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
+		List<ClassAnnouncement> announcements = classAnnouncementService.findAllByDepartmentCodeAndSemesterNumber(departmentCode, semesterNumber);
+		ApiResponse<List<ClassAnnouncement>> response = new ApiResponse<>(200, "Announcements retrieved successfully", announcements,time, "/api/v1/university/classroom/get-class-announcement");
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 }

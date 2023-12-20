@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/university/semester")
 @CrossOrigin("*")
@@ -60,4 +62,43 @@ public class SemesterController {
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/get-semester-by-code")
+    public ResponseEntity<ApiResponse<Semester>> getSemesterByCode(@RequestParam String semesterCode) {
+        String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
+        try {
+            Semester semester = semesterService.findBySemesterCode(semesterCode);
+            ApiResponse<Semester> response = new ApiResponse<>(200, "Semester retrieved successfully", semester,time, "/api/v1/university/semester/get-semester-by-code");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            ApiResponse<Semester> response = new ApiResponse<>(400, e.getMessage(), null,time, "/api/v1/university/semester/get-semester-by-code");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping("/get-all-semester")
+    public ResponseEntity<ApiResponse<List<Semester>>> getAllSemester() {
+        String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
+        try {
+            List<Semester> semester = semesterService.findAllSemester();
+            ApiResponse<List<Semester>> response = new ApiResponse<>(200, "Semester retrieved successfully", semester,time, "/api/v1/university/semester/get-all-semester");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            ApiResponse<List<Semester>> response = new ApiResponse<>(400, e.getMessage(), null,time, "/api/v1/university/semester/get-all-semester");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/delete-semester-by-code")
+    public ResponseEntity<ApiResponse<String>> deleteSemesterByCode(@RequestParam String semesterCode) {
+        String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
+        try {
+            String semesterStatus = semesterService.deleteDepartment(semesterCode);
+            ApiResponse<String> response = new ApiResponse<>(200, "Semester deleted successfully", semesterStatus, time, "/api/v1/university/semester/delete-semester-by-code");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            ApiResponse<String> response = new ApiResponse<>(400, e.getMessage(), null, time, "/api/v1/university/semester/delete-semester-by-code");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
