@@ -140,12 +140,21 @@ public class TeacherService {
         List<Teacher> teacherList = teacherRepository.findAll();
 
         int maxTeacherId = teacherList.stream()
-                .mapToInt(teacher -> Integer.parseInt(teacher.getTeacherId()))
+                .filter(teacher -> teacher.getTeacherId() != null)  // Add this filter
+                .mapToInt(teacher -> {
+                    try {
+                        return Integer.parseInt(teacher.getTeacherId());
+                    } catch (NumberFormatException e) {
+                        // Handle or log the exception as needed
+                        return 0;  // Return a default value or skip the value
+                    }
+                })
                 .max()
                 .orElse(GeneralConstants.TEACHER_INITIAL_ACADEMIC_ID);
 
-        return String.valueOf(maxTeacherId+1 );
+        return String.valueOf(maxTeacherId + 1);
     }
+
 
 
     private void sendMail(String subject, String userEmail, String htmlContent, String text){
