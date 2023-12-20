@@ -77,7 +77,7 @@ public class UserService {
 				}
 				user.setAccountCreationDateTime(new ModelLocalDateTime(null));
 				CustomUserDetails savedUser = repository.save(user);
-				sendMail(user.getEmail(), user.getUsername(), user.getUserId(), password);
+//				sendMail(user.getEmail(), user.getUsername(), user.getUserId(), password);
 
 				savedUser.setPassword(password);
 				// Return the saved user
@@ -292,20 +292,18 @@ public class UserService {
 				+ "            </div>\r\n" + "        </td>\r\n" + "    </tr>\r\n" + "</table>\r\n" + "</body>\r\n"
 				+ "</html>\r\n" + "";
 
-		if (fileContent != null) {
-			// Replace placeholders in the email template
-			String modifiedContent = fileContent.replace("#user#", userName).replace("#userId#", userId)
-					.replace("#password#", password);
+		// Replace placeholders in the email template
+		String modifiedContent = fileContent.replace("#user#", userName).replace("#userId#", userId)
+				.replace("#password#", password);
 
-			// Send an email with user credentials
-			MailDto dto = new MailDto();
-			dto.setTo(Collections.singletonList(email));
-			dto.setSubject("Account Credential");
-			dto.setHtmlString(modifiedContent);
-			dto.setTextBody("User Account Credentials");
-			emailService.sendEmailWithAttachment(dto);
-			System.out.println("Mail sent::" + email);
-		}
+		// Send an email with user credentials
+		MailDto dto = new MailDto();
+		dto.setTo(Collections.singletonList(email));
+		dto.setSubject("Account Credential");
+		dto.setHtmlString(modifiedContent);
+		dto.setTextBody("User Account Credentials");
+		emailService.sendEmailWithAttachment(dto);
+		System.out.println("Mail sent::" + email);
 
 	}
 

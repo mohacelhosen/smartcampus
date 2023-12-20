@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TeacherApprove {
     private String teacherRegistrationId;
-    private String teacherId;
     private String roles;
     private String sectionName;
     private String sectionCode;
