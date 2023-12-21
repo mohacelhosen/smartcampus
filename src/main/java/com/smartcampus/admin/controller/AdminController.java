@@ -1,7 +1,7 @@
 package com.smartcampus.admin.controller;
 
-import com.smartcampus.Student.model.StudentEntity;
-import com.smartcampus.Student.service.StudentService;
+import com.smartcampus.usermanagement.student.model.StudentEntity;
+import com.smartcampus.usermanagement.student.service.StudentService;
 import com.smartcampus.admin.model.Admin;
 import com.smartcampus.admin.model.StudentApprove;
 import com.smartcampus.admin.model.TeacherApprove;
@@ -10,8 +10,8 @@ import com.smartcampus.common.ApiResponse;
 import com.smartcampus.common.ModelLocalDateTime;
 import com.smartcampus.common.RequestId;
 import com.smartcampus.exception.NotFoundException;
-import com.smartcampus.teacher.model.Teacher;
-import com.smartcampus.teacher.service.TeacherService;
+import com.smartcampus.usermanagement.teacher.model.Teacher;
+import com.smartcampus.usermanagement.teacher.service.TeacherService;
 import org.slf4j.Logger;
 
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ public class AdminController {
     }
 
     @PostMapping("/admin/approve-teacher")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasAnyRole('ROLE_FACULTY_HIRING_COMMITTEE')")
     public ResponseEntity<ApiResponse<Teacher>> approveTeacher(@RequestBody TeacherApprove teacherApprove){
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         ApiResponse<Teacher> response = new ApiResponse<>();
@@ -62,7 +62,7 @@ public class AdminController {
             response.setStatus(HttpStatus.OK.value());
             // Log successful registration
             MDC.put("requestId", RequestId.generateRequestId());
-            logger.info("AdminController::approveTeacher, Successfully Approve Teacher .Timestamp: {}, teacher ID:{}", time, teacher.getTeacherId());
+            logger.info("AdminController::approveTeacher, Successfully Approve Teacher .Timestamp: {}, teacher ID:{}", time, teacher.getTeacherAcademicId());
             return new ResponseEntity<>(response, HttpStatus.OK);
         }catch (NotFoundException e){
             response.setData(null);
@@ -74,7 +74,7 @@ public class AdminController {
     }
 
     @PostMapping("/admin/approve-student")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_REGISTRAR')")
     public ResponseEntity<ApiResponse<StudentEntity>> approveStudent(@RequestBody StudentApprove studentApprove){
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         ApiResponse<StudentEntity> response = new ApiResponse<>();

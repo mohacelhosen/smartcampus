@@ -3,9 +3,9 @@ package com.smartcampus.common;
 import com.smartcampus.security.model.CustomUserDetails;
 
 public class CustomUserObj {
-    public static CustomUserDetails customObj(String userId, String email, String fullName, String role){
+    public static CustomUserDetails customObj(String academicId, String email, String fullName, String role){
         CustomUserDetails user = new CustomUserDetails();
-        user.setUserId(userId);
+        user.setAcademicId(academicId);
         user.setEmail(email);
         user.setFullName(fullName);
         user.setRole(role);

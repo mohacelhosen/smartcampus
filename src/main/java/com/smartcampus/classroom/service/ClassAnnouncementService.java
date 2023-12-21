@@ -1,15 +1,13 @@
 package com.smartcampus.classroom.service;
 
-import com.smartcampus.Student.service.StudentService;
-import com.smartcampus.announcement.model.Announcement;
+import com.smartcampus.usermanagement.student.service.StudentService;
 import com.smartcampus.classroom.model.ClassAnnouncement;
 import com.smartcampus.classroom.repoository.ClassAnnouncementRepository;
 import com.smartcampus.course.model.Course;
 import com.smartcampus.course.service.CourseService;
-import com.smartcampus.department.model.Department;
 import com.smartcampus.department.service.DepartmentServie;
-import com.smartcampus.teacher.model.Teacher;
-import com.smartcampus.teacher.service.TeacherService;
+import com.smartcampus.usermanagement.teacher.model.Teacher;
+import com.smartcampus.usermanagement.teacher.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

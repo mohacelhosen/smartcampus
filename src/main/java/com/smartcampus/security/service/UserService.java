@@ -1,29 +1,27 @@
 package com.smartcampus.security.service;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.smartcampus.common.GeneralConstants;
-import com.smartcampus.common.HtmlContentReplace;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import com.smartcampus.common.ModelLocalDateTime;
 import com.smartcampus.common.RandomPasswordGenerator;
 import com.smartcampus.email.dto.MailDto;
 import com.smartcampus.email.service.EmailService;
 import com.smartcampus.exception.AlreadyExistsException;
 import com.smartcampus.exception.NotFoundException;
+import com.smartcampus.exception.UserNotFoundException;
 import com.smartcampus.security.model.CustomUserDetails;
 import com.smartcampus.security.model.LoginModel;
 import com.smartcampus.security.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -57,22 +55,93 @@ public class UserService {
             user.setPassword(encodePWD);
             user.setPreviousPassword(Collections.singletonList(encodePWD));
             user.setAccountCreationDateTime(new ModelLocalDateTime(null));
-            if (user.getRole().equalsIgnoreCase("Teacher")) {
-                user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_TEACHER));
-            } else if (user.getRole().equalsIgnoreCase("Student")) {
-                user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_STUDENT));
-            } else if (user.getRole().equalsIgnoreCase("Staff")) {
-                user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_STAFF));
-            } else if (user.getRole().equalsIgnoreCase("Admin")) {
-                user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_ADMIN));
-            } else if (user.getRole().equalsIgnoreCase("BoardMember")) {
-                user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_BOARD_MEMBER));
-            } else {
-                user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_GUEST));
+
+            // Assign roles based on the user's role
+            String userRole = user.getRole();
+            if (userRole != null) {
+                switch (userRole.toUpperCase()) {
+                    case "ADMIN":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_ADMIN));
+                        break;
+                    case "TEACHER":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_TEACHER));
+                        break;
+                    case "STUDENT":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_STUDENT));
+                        break;
+                    case "STAFF":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_STAFF));
+                        break;
+                    case "BOARDMEMBER":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_BOARD_MEMBER));
+                        break;
+                    case "GUEST":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_GUEST));
+                        break;
+                    case "FACULTY_HIRING_COMMITTEE":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_FACULTY_HIRING_COMMITTEE));
+                        break;
+                    case "VOLUNTEER_COORDINATOR":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_VOLUNTEER_COORDINATOR));
+                        break;
+                    case "ATHLETICS_DIRECTOR":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_ATHLETICS_DIRECTOR));
+                        break;
+                    case "INTERNATIONAL_STUDENT_ADVISOR":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_INTERNATIONAL_STUDENT_ADVISOR));
+                        break;
+                    case "COMMUNICATIONS_OFFICER":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_COMMUNICATIONS_OFFICER));
+                        break;
+                    case "HEALTH_SERVICES_PROVIDER":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_HEALTH_SERVICES_PROVIDER));
+                        break;
+                    case "SECURITY_OFFICER":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_SECURITY_OFFICER));
+                        break;
+                    case "RESIDENTIAL_LIFE_COORDINATOR":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_RESIDENTIAL_LIFE_COORDINATOR));
+                        break;
+                    case "EVENT_COORDINATOR":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_EVENT_COORDINATOR));
+                        break;
+                    case "HR_MANAGER":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_HR_MANAGER));
+                        break;
+                    case "RESEARCHER":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_RESEARCHER));
+                        break;
+                    case "REGISTRAR":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_REGISTRAR));
+                        break;
+                    case "DEAN":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_DEAN));
+                        break;
+                    case "EXTERNAL_PARTNER":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_EXTERNAL_PARTNER));
+                        break;
+                    case "IT_SUPPORT":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_IT_SUPPORT));
+                        break;
+                    case "ADVISOR":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_ADVISOR));
+                        break;
+                    case "ALUMNI":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_ALUMNI));
+                        break;
+                    case "FINANCIAL_AID_OFFICER":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_FINANCIAL_AID_OFFICER));
+                        break;
+                    case "LIBRARIAN":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_LIBRARIAN));
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Invalid role: " + userRole);
+                }
             }
-            user.setAccountCreationDateTime(new ModelLocalDateTime(null));
+
             CustomUserDetails savedUser = repository.save(user);
-//				sendMail(user.getEmail(), user.getUsername(), user.getUserId(), password);
+            // sendMail(user.getEmail(), user.getUsername(), user.getUserId(), password);
 
             savedUser.setPassword(password);
             // Return the saved user
@@ -81,6 +150,36 @@ public class UserService {
         } else {
             throw new NotFoundException("Email id can't be null or duplicate or invalid email");
         }
+    }
+
+    public CustomUserDetails addRole(String email, String userRole) {
+        Optional<CustomUserDetails> userOptional = repository.findUserByEmail(email);
+
+        if (userOptional.isPresent()) {
+            CustomUserDetails user = userOptional.get();
+
+            // Convert the authorities to a mutable list
+            List<String> authorities = new ArrayList<>(user.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList()));
+
+            // Check if the role already exists
+            if (!authorities.contains(userRole)) {
+                // Add the new role
+                authorities.add(userRole);
+
+                return repository.save(user);
+            } else {
+                // Role already exists, no action needed
+                return user;
+            }
+        } else {
+            throw new UserNotFoundException("User not found for email: " + email);
+        }
+    }
+
+    public CustomUserDetails findByEmail(String email){
+        return repository.findUserByEmail(email).orElseThrow(()->  new UserNotFoundException("User not found for email: " + email));
     }
 
     // <------------------------ Login ------------------------->
@@ -146,7 +245,7 @@ public class UserService {
                 CustomUserDetails userDetails = repository.save(user);
 
                 // Send notification email
-                sendMail(user.getEmail(), user.getUsername(), user.getUserId(), newPassword);
+                sendMail(user.getEmail(), user.getUsername(), user.getAcademicId(), newPassword);
                 logger.info("UserService:updatePassword, Total Previous PWD::" + Arrays.toString(userDetails.getPreviousPassword().toArray()));
 
                 return "Successfully updated";
@@ -181,7 +280,7 @@ public class UserService {
             repository.save(user);
 
             // Send a notification email with the new password
-            sendMail(user.getEmail(), user.getUsername(), user.getUserId(), generateRandomPassword);
+            sendMail(user.getEmail(), user.getUsername(), user.getAcademicId(), generateRandomPassword);
 
             return "Successfully updated";
         } else {

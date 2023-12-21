@@ -12,6 +12,7 @@ public class HtmlContentReplace {
         try{
             String originalContent = Files.readString(path);
             originalContent = originalContent.replace("[|###dear###|]",dear);
+            originalContent = originalContent.replace("[|###userName###|]",userName);
             originalContent = originalContent.replace("[|#ApplicantName#|]",applicantName);
             originalContent = originalContent.replace("[|#userEmail#|]",userEmail);
             originalContent = originalContent.replace("[|#userName#|]",userName);
@@ -27,6 +28,7 @@ public class HtmlContentReplace {
         try{
             String originalContent = Files.readString(path);
             originalContent = originalContent.replace("[|###dear###|]",applicantName);
+            originalContent = originalContent.replace("[|###userName###|]",applicantName);
             originalContent = originalContent.replace("[|#reason#|]",reason);
             return originalContent;
         } catch (IOException e) {
@@ -34,13 +36,14 @@ public class HtmlContentReplace {
         }
     }
 
-    public static String replaceHtmlApproveContent( String academicId, String password ){
+    public static String replaceHtmlApproveContent( String academicId, String password, String teacherStudent ){
         String filePath = "Templates/userid-password.html";
         Path path = Paths.get(filePath);
         try{
             String originalContent = Files.readString(path);
             originalContent = originalContent.replace("[|#userId#|]",academicId);
             originalContent = originalContent.replace("[|#password#|]",password);
+            originalContent = originalContent.replace("[|#teacherstudent#|]",teacherStudent);
             return originalContent;
         } catch (IOException e) {
             throw new RuntimeException("Error occurred during file content reading");

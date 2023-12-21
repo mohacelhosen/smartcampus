@@ -29,7 +29,7 @@ public class CustomUserDetails implements UserDetails {
 	@Id
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private String id;
-	private String userId;
+	private String academicId;
 	private String password;
 	private String email;
 	private String fullName;
@@ -65,7 +65,7 @@ public class CustomUserDetails implements UserDetails {
 	@Override
 	@JsonIgnore
 	public String getUsername() {
-		return this.userId;
+		return this.academicId;
 	}
 
 	@Override

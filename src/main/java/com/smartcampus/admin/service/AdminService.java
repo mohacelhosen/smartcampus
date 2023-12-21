@@ -1,21 +1,19 @@
 package com.smartcampus.admin.service;
 
-import com.smartcampus.Student.model.StudentEntity;
-import com.smartcampus.Student.repository.StudentRepository;
-import com.smartcampus.Student.service.StudentService;
+import com.smartcampus.usermanagement.student.model.StudentEntity;
+import com.smartcampus.usermanagement.student.repository.StudentRepository;
+import com.smartcampus.usermanagement.student.service.StudentService;
 import com.smartcampus.admin.model.StudentApprove;
 import com.smartcampus.admin.model.TeacherApprove;
 import com.smartcampus.common.CustomUserObj;
-import com.smartcampus.common.GeneralConstants;
 import com.smartcampus.common.HtmlContentReplace;
 import com.smartcampus.common.ModelLocalDateTime;
 import com.smartcampus.email.dto.MailDto;
 import com.smartcampus.email.service.EmailService;
 import com.smartcampus.exception.NotFoundException;
 import com.smartcampus.security.repository.UserRepository;
-import com.smartcampus.teacher.model.Teacher;
-import com.smartcampus.teacher.service.TeacherService;
-import jakarta.mail.MessagingException;
+import com.smartcampus.usermanagement.teacher.model.Teacher;
+import com.smartcampus.usermanagement.teacher.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +22,6 @@ import com.smartcampus.admin.repository.AdminRepository;
 import com.smartcampus.security.model.CustomUserDetails;
 import com.smartcampus.security.service.UserService;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -128,10 +125,7 @@ public class AdminService {
     }
 
     public Teacher teacherInformationCheckAndApprove(TeacherApprove teacherApprove) {
-        Optional<Admin> AdminOptional = adminRepository.findByUserId(teacherApprove.getApproveByAdminId());
-        if (AdminOptional.isEmpty()){
-            throw  new NotFoundException("Admin not Found, Id: "+teacherApprove.getApproveByAdminId());
-        }
+
 
         Teacher dbTeacher = teacherService.findTeacherByRegistration(teacherApprove.getTeacherRegistrationId());
         if (dbTeacher == null){
@@ -140,35 +134,19 @@ public class AdminService {
 
         String nextTeacherId = teacherService.nextTeacherId();
         String teacherRegistrationId = teacherApprove.getTeacherRegistrationId();
-        String teacherId = nextTeacherId;
-        String roles = "Teacher";
-        String sectionName = teacherApprove.getSectionName();
-        String sectionCode = teacherApprove.getSectionCode();
-        String approveStatus = teacherApprove.getApplicationStatus();
-        Boolean accountEnabled = true;
-        String approveByAdminId = teacherApprove.getApproveByAdminId();
-        String approveByAdminName = teacherApprove.getApproveByAdminName();
+        String teacherAcademicId = nextTeacherId;
+        String role = "Teacher";
 
         CustomUserDetails cd = new CustomUserDetails();
         cd.setEmail(dbTeacher.getEmail());
-        cd.setId(teacherId);
-        cd.setRole(roles);
+        cd.setId(teacherAcademicId);
+        cd.setRole(role);
         cd.setFullName(dbTeacher.getFirstName()+" "+dbTeacher.getLastName());
         CustomUserDetails register = userService.register(cd);
 
-        Teacher teacher = teacherService.approveTeacher(
-                teacherRegistrationId,
-                teacherId,
-                roles,
-                sectionName,
-                sectionCode,
-                approveStatus,
-                accountEnabled,
-                approveByAdminId,
-                approveByAdminName
-        );
-        String content = HtmlContentReplace.replaceHtmlApproveContent(teacherId, register.getPassword());
-        sendMail("Application approve",teacher.getEmail(),content,"Your application is approve. ID:"+teacherId+", password:"+register.getPassword());
+        Teacher teacher = teacherService.approveTeacher(teacherAcademicId, teacherApprove);
+        String content = HtmlContentReplace.replaceHtmlApproveContent(teacherAcademicId, register.getPassword(), "TEACHER");
+        sendMail("Application approve",teacher.getEmail(),content,"Your application is approve. ID:"+teacherAcademicId+", password:"+register.getPassword());
 
         if (teacher == null){
             throw  new NotFoundException("Teacher not Found, Registration Id: "+teacherRegistrationId);
@@ -206,7 +184,7 @@ public class AdminService {
             cd.setFullName(student.getFirstName()+" "+student.getLastName());
             CustomUserDetails register = userService.register(cd);
 
-            String content = HtmlContentReplace.replaceHtmlApproveContent(studentAcademicId, register.getPassword());
+            String content = HtmlContentReplace.replaceHtmlApproveContent(studentAcademicId, register.getPassword(), "STUDENT");
             sendMail("Application approve",student.getEmail(),content,"Your application is approve. ID:"+studentAcademicId+", password:"+register.getPassword());
             return studentRepository.save(student);
         }{

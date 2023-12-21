@@ -43,8 +43,8 @@ public class JwtService {
 
 			Map<String, Object> claims = new HashMap<>();
 			claims.put("authorities", authorities); // Add the roles information to the claims
-			claims.put("userName", user.getUsername());
-			claims.put("userId", user.getUserId());
+			claims.put("userName", user.getFullName());
+			claims.put("userId", user.getAcademicId());
 
 			return createToken(claims, userId);
 		} else {
