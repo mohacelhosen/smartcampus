@@ -56,34 +56,64 @@ public class UserRestController {
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody LoginModel loginInfo) {
-        boolean loginSuccessful = service.login(loginInfo);
-        Map<String, String> response = new HashMap<>();
+    public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginModel loginInfo) {
+        try {
+            boolean loginSuccessful = service.login(loginInfo);
+            String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
+            ApiResponse<String> response = new ApiResponse<>();
+            response.setTimestamp(time);
+            response.setEndpoint("/api/v1/university/auth/login");
 
-        if (loginSuccessful) {
-            response.put("message", "Login Successful😇");
-            response.put("token", jwtService.generateToken(loginInfo.getUserId()));
-            return ResponseEntity.ok(response);
-        } else {
-            response.put("error", "Invalid credentials");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            if (loginSuccessful) {
+                response.setMessage("Login Successful😇");
+                response.setData(jwtService.generateToken(loginInfo.getAcademicId()));
+                response.setStatus(HttpStatus.OK.value());
+                return ResponseEntity.ok(response);
+            } else {
+                response.setMessage("Login Failed");
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+            }
+        } catch (RuntimeException e) {
+            // Handle exceptions and return appropriate error response
+            ApiResponse<String> errorResponse = new ApiResponse<>();
+            errorResponse.setTimestamp(new ModelLocalDateTime(null).getLocalDateTimeStringAMPM());
+            errorResponse.setEndpoint("/api/v1/university/auth/login");
+            errorResponse.setMessage(e.getMessage());
+            errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
+
     @PutMapping("/auth/update")
-    public ResponseEntity<?> activate(@RequestBody ActivateModel activateModel) {
-        String updateInfo = service.updatePassword(activateModel.getAcademicId(), activateModel.getPreviousPassword(),
-                activateModel.getNewPassword());
-        return ResponseEntity.ok(Map.of("message", updateInfo));
+    public ResponseEntity<ApiResponse<String>> activate(@RequestBody ActivateModel activateModel) {
+        String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
+        ApiResponse<String> response = new ApiResponse<>();
+        response.setTimestamp(time);
+        response.setEndpoint("/api/v1/university/auth/update");
+        try {
+            String updateInfo = service.updatePassword(activateModel.getAcademicId(), activateModel.getPreviousPassword(), activateModel.getNewPassword());
+            response.setMessage("Password update successfully");
+            response.setStatus(HttpStatus.OK.value());
+            response.setData(updateInfo);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            response.setMessage(e.getMessage());
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setData(null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
     }
 
-	@GetMapping("/add-new-role")
+    @GetMapping("/add-new-role")
     public ResponseEntity<ApiResponse<CustomUserDetails>> addRole(@RequestParam String userEmail, @RequestParam String addNewRole) {
         ApiResponse<CustomUserDetails> response = new ApiResponse<>();
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         response.setEndpoint("/api/v1/university/add-new-role");
-		CustomUserDetails customUserDetails = service.addRole(userEmail, addNewRole);
-		response.setData(customUserDetails);
+        CustomUserDetails customUserDetails = service.addRole(userEmail, addNewRole);
+        response.setData(customUserDetails);
         response.setMessage("New Role successfully added");
         response.setStatus(HttpStatus.OK.value());
         response.setTimestamp(time);
@@ -103,6 +133,7 @@ public class UserRestController {
         response.setTimestamp(time);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
     @GetMapping("/test")
     @PreAuthorize("hasAnyRole('ROLE_STUDENT', 'ROLE_STAFF', 'ROLE_ADMIN', 'ROLE_BOARD_MEMBER', 'ROLE_DEVELOPER')")
     public ResponseEntity<?> testSecurity() {

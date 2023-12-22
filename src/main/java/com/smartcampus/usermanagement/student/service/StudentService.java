@@ -47,7 +47,7 @@ public class StudentService {
         List<Admin> adminList = adminRepository.findAll();
 
         adminList.forEach(singleAdmin->{
-            String htmlContent = HtmlContentReplace.replaceHtmlContent("verify",singleAdmin.getFullName(),student.getFirstName(),"Student", student.getEmail(),registrationId);
+            String htmlContent = HtmlContentReplace.replaceHtmlContent("verify",singleAdmin.getFatherName(),student.getFirstName(),"Student", student.getEmail(),registrationId);
             sendMail("ASSP verify Teacher "+student.getRegistrationId(),singleAdmin.getEmail(), htmlContent,"As soon as possible verify the student");
         });
         return saveStudent;

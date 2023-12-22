@@ -35,20 +35,19 @@ public class SemesterService {
     public Semester registerSemester(Semester semester){
         if (valid(semester)){
             semester.setCreatedDateTime(new ModelLocalDateTime(null));
-            semester.setCreatedBy(null);
             return semesterRepository.save(semester);
         }else{
             throw new AlreadyExistsException("Department and Semester already Registered");
         }
     }
 
-    public Semester addCourseAndTeacherAndClass(String semesterCode, String courseCode, String teacherId, String classJoinCode) {
+    public Semester addCourseAndTeacherAndClass(String semesterCode, String courseCode, String teacherId, String classJoinCode, String institutionCode) {
         Optional<Semester> optionalSemester = semesterRepository.findBySemesterCode(semesterCode);
         if (optionalSemester.isEmpty()) {
             throw new NotFoundException("Semester id is not valid. ID: " + semesterCode);
         }
 
-        Optional<Course> optionalCourse = courseRepository.findByCourseCode(courseCode);
+        Optional<Course> optionalCourse = courseRepository.findByCourseCode(courseCode, institutionCode);
         if (optionalCourse.isEmpty()) {
             throw new NotFoundException("Course id is not valid. ID: " + courseCode);
         }

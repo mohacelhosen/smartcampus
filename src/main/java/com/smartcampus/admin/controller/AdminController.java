@@ -50,13 +50,14 @@ public class AdminController {
     }
 
     @PostMapping("/admin/approve-teacher")
-//    @PreAuthorize("hasAnyRole('ROLE_FACULTY_HIRING_COMMITTEE')")
-    public ResponseEntity<ApiResponse<Teacher>> approveTeacher(@RequestBody TeacherApprove teacherApprove){
+    @PreAuthorize("hasRole('ROLE_FACULTY_HIRING_COMMITTEE')")
+    public ResponseEntity<ApiResponse<Teacher>> approveTeacher(@RequestBody TeacherApprove teacherApprove) {
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         ApiResponse<Teacher> response = new ApiResponse<>();
         response.setTimestamp(time);
         response.setEndpoint("/api/v1/university/admin/approve-teacher");
-        try{
+
+        try {
             Teacher teacher = adminService.teacherInformationCheckAndApprove(teacherApprove);
             response.setData(teacher);
             response.setStatus(HttpStatus.OK.value());
@@ -64,14 +65,22 @@ public class AdminController {
             MDC.put("requestId", RequestId.generateRequestId());
             logger.info("AdminController::approveTeacher, Successfully Approve Teacher .Timestamp: {}, teacher ID:{}", time, teacher.getTeacherAcademicId());
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (NotFoundException e){
+        } catch (NotFoundException e) {
             response.setData(null);
             response.setStatus(HttpStatus.NOT_FOUND.value());
             response.setMessage(e.getMessage());
             logger.error("AdminController::approveTeacher, Teacher not found .Timestamp:{}, Input: {}, Message: {}", time, teacherApprove, e.getMessage(), e);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } catch (RuntimeException e) {
+            // Handle the runtime exception from nextTeacherId method
+            response.setData(null);
+            response.setStatus(HttpStatus.BAD_REQUEST.value());  // Or another appropriate status code
+            response.setMessage(e.getMessage());  // Set the error message from the exception
+            logger.error("AdminController::approveTeacher, Runtime Exception .Timestamp:{}, Input: {}, Message: {}", time, teacherApprove, e.getMessage(), e);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);  // Or another appropriate status code
         }
     }
+
 
     @PostMapping("/admin/approve-student")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_REGISTRAR')")

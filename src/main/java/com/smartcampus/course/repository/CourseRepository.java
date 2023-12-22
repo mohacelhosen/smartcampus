@@ -9,5 +9,5 @@ import com.smartcampus.course.model.Course;
 
 public interface CourseRepository extends MongoRepository<Course, String> {
     @Query("{'courseCode': ?0}")
-    Optional<Course> findByCourseCode(String courseCode);
+    Optional<Course> findByCourseCode(String courseCode, String institutionCode);
 }

@@ -129,14 +129,14 @@ public class CourseController {
     }
 
     @GetMapping("/get-by-course-code")
-    public ResponseEntity<ApiResponse<Course>> getSingleCourseInfoByCode(@RequestParam String courseCode) {
+    public ResponseEntity<ApiResponse<Course>> getSingleCourseInfoByCode(@RequestParam String courseCode, @RequestParam String institutionCode) {
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         ApiResponse<Course> response = new ApiResponse<>();
         response.setTimestamp(time);
         response.setEndpoint("/api/v1/university/course/get-by-course-code");
 
         try {
-            Course courseInfo = courseService.findByCourseCode(courseCode);
+            Course courseInfo = courseService.findByCourseCode(courseCode, institutionCode);
             response.setMessage("Successfully retriv course information");
             response.setStatus(HttpStatus.OK.value());
             response.setData(courseInfo);
@@ -171,14 +171,14 @@ public class CourseController {
     }
 
     @DeleteMapping("/delete-by-course-code")
-    public ResponseEntity<ApiResponse<String>> deleteCourseByCourseCode(@RequestParam String courseCode) {
+    public ResponseEntity<ApiResponse<String>> deleteCourseByCourseCode(@RequestParam String courseCode, @RequestParam String institutionCode) {
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         ApiResponse<String> response = new ApiResponse<>();
         response.setTimestamp(time);
         response.setEndpoint("/api/v1/university/course/delete-by-course-code");
 
         try {
-            String message = courseService.deleteCourseByCourseCode(courseCode);
+            String message = courseService.deleteCourseByCourseCode(courseCode,institutionCode);
             response.setData(message);
             response.setStatus(HttpStatus.OK.value());
             MDC.put("requestId", RequestId.generateRequestId());

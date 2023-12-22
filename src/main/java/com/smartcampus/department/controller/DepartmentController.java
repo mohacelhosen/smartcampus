@@ -34,7 +34,7 @@ public class DepartmentController {
         response.setEndpoint("/api/v1/university/department/register");
 
         try {
-            Department registerDepartment = departmentServie.registerDepartment(department);
+            Department registerDepartment = departmentServie.registerDepartment(department, department.getTotalSemester());
 
             response.setData(registerDepartment);
             response.setStatus(HttpStatus.CREATED.value());
@@ -86,13 +86,13 @@ public class DepartmentController {
     }
 
     @PutMapping("/add-course")
-    public ResponseEntity<ApiResponse<Department>> addCourseInDepartment(@RequestParam String departmentCode, @RequestParam String courseCode) {
+    public ResponseEntity<ApiResponse<Department>> addCourseInDepartment(@RequestParam String departmentCode, @RequestParam String courseCode, @RequestParam String institutionCode) {
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         ApiResponse<Department> response = new ApiResponse<>();
         response.setTimestamp(time);
         response.setEndpoint("/api/v1/university/department/add-course");
         try {
-            Department departmentInfo = departmentServie.addCourseInDepartment(departmentCode, courseCode);
+            Department departmentInfo = departmentServie.addCourseInDepartment(departmentCode, courseCode,institutionCode);
             response.setStatus(HttpStatus.OK.value());
             response.setMessage(" Successfully added course in department");
             response.setData(departmentInfo);

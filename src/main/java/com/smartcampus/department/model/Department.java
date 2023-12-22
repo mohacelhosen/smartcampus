@@ -20,11 +20,15 @@ import lombok.NoArgsConstructor;
 public class Department {
 	@Id
 	private String id;
+	private String institutionCode;
 	private String departmentGroupName;
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private String departmentGroupCode;
 	private String departmentName;
 	private String departmentShortName;
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private String departmentCode;
+	private Integer totalSemester;
 	List<Course> courseList;
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private ModelLocalDateTime createdDateTime;

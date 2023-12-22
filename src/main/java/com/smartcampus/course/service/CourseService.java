@@ -32,8 +32,8 @@ public class CourseService {
         return courseRepository.findById(courseId).orElseThrow(() -> new NotFoundException("Invalid course id"));
     }
 
-    public Course findByCourseCode(String courseCode) {
-        return courseRepository.findByCourseCode(courseCode)
+    public Course findByCourseCode(String courseCode, String institutionCode) {
+        return courseRepository.findByCourseCode(courseCode, institutionCode)
                 .orElseThrow(() -> new NotFoundException("Invalid course courseCode: "+courseCode));
     }
 
@@ -41,8 +41,8 @@ public class CourseService {
         return courseRepository.findAll();
     }
 
-    public String deleteCourseByCourseCode(String courseCode) {
-        Optional<Course> findByCourseCode = courseRepository.findByCourseCode(courseCode);
+    public String deleteCourseByCourseCode(String courseCode, String institutionCode) {
+        Optional<Course> findByCourseCode = courseRepository.findByCourseCode(courseCode, institutionCode);
         Course dbCourse = findByCourseCode.get();
         if (dbCourse != null) {
             courseRepository.delete(dbCourse);
@@ -73,11 +73,11 @@ public class CourseService {
         return course != null && course.getCourseTitle() != null && !course.getCourseTitle().isEmpty()
                 && course.getCourseCredits() != null && !course.getCourseCredits().isEmpty()
                 && course.getCourseCode() != null && !course.getCourseCode().isEmpty()
-                && !courseCodeExists(course.getCourseCode());
+                && !courseCodeExists(course.getCourseCode(), course.getInstitutionCode());
     }
 
-    private boolean courseCodeExists(String courseCode) {
-        return courseRepository.findByCourseCode(courseCode).isPresent();
+    private boolean courseCodeExists(String courseCode, String institutionCode) {
+        return courseRepository.findByCourseCode(courseCode,institutionCode).isPresent();
     }
 
     public List<Course> findAll() {

@@ -1,6 +1,8 @@
 package com.smartcampus.security.service;
 
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.smartcampus.common.GeneralConstants;
+import com.smartcampus.common.HtmlContentReplace;
 import com.smartcampus.common.ModelLocalDateTime;
 import com.smartcampus.common.RandomPasswordGenerator;
 import com.smartcampus.email.dto.MailDto;
@@ -159,15 +161,13 @@ public class UserService {
             CustomUserDetails user = userOptional.get();
 
             // Convert the authorities to a mutable list
-            List<String> authorities = new ArrayList<>(user.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList()));
+            List<String> authorities = new ArrayList<>(user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
 
             // Check if the role already exists
             if (!authorities.contains(userRole)) {
                 // Add the new role
                 authorities.add(userRole);
-
+                user.setAuthorities(authorities);
                 return repository.save(user);
             } else {
                 // Role already exists, no action needed
@@ -178,26 +178,28 @@ public class UserService {
         }
     }
 
-    public CustomUserDetails findByEmail(String email){
-        return repository.findUserByEmail(email).orElseThrow(()->  new UserNotFoundException("User not found for email: " + email));
+    public CustomUserDetails findByEmail(String email) {
+        return repository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found for email: " + email));
     }
 
     // <------------------------ Login ------------------------->
     public boolean login(LoginModel loginInfo) {
         if (isInvalidLoginInfo(loginInfo)) {
-            logger.error("Incomplete user info provided for login");
-            return false;
+            throw new RuntimeException("Incomplete user info provided for login");
         }
 
         logger.info("UserService::login, ❓loginInfo found::{}", true);
-
-        String userId = loginInfo.getUserId();
-        Optional<CustomUserDetails> userEntity = getUserById(userId);
+        Optional<CustomUserDetails> userEntity;
+        if (loginInfo.getAcademicId().contains("@")) {
+            userEntity = repository.findUserByEmail(loginInfo.getAcademicId());
+        } else {
+            userEntity = getUserById(loginInfo.getAcademicId());
+        }
 
         if (userEntity.isPresent()) {
             if (!userEntity.get().isEnabled()) {
                 logger.info("UserService::login, ❓account is not enabled::{}", false);
-                return false; // Account is not enabled
+                throw new RuntimeException("Account is not enabled");
             }
 
             logger.info("UserService::login, ❓loginInfo exists::{}", true);
@@ -208,24 +210,24 @@ public class UserService {
                 return true; // Successful login
             } else {
                 logger.info("UserService::login, ❓logging pwd match::{}", false);
-                return false; // Incorrect password
+                throw new RuntimeException("Logging Password Incorrect");
             }
         } else {
             logger.info("UserServiceImpl::login, ❓loginInfo exists::{}", false);
-            return false; // User not found
+            throw new RuntimeException("User Not Found");
         }
     }
 
     private boolean isInvalidLoginInfo(LoginModel loginInfo) {
-        return loginInfo == null || loginInfo.getUserId() == null || loginInfo.getUserId().isEmpty() || loginInfo.getPassword() == null || loginInfo.getPassword().isEmpty();
+        return loginInfo == null || loginInfo.getAcademicId() == null || loginInfo.getAcademicId().isEmpty() || loginInfo.getPassword() == null || loginInfo.getPassword().isEmpty();
     }
 
     private Optional<CustomUserDetails> getUserById(String userId) {
-        return repository.findByUserId(userId);
+        return repository.findByAcademicId(userId);
     }
 
     public String updatePassword(String userId, String previousPassword, String newPassword) {
-        Optional<CustomUserDetails> userOptional = repository.findByUserId(userId);
+        Optional<CustomUserDetails> userOptional = repository.findByAcademicId(userId);
 
         if (userOptional.isPresent()) {
             CustomUserDetails user = userOptional.get();
@@ -245,20 +247,27 @@ public class UserService {
                 CustomUserDetails userDetails = repository.save(user);
 
                 // Send notification email
-                sendMail(user.getEmail(), user.getUsername(), user.getAcademicId(), newPassword);
+                String content = HtmlContentReplace.replaceHtmlUpdatePWDContent(user.getAcademicId(), newPassword);
+                sendMail("Password Update Confirmation", user.getEmail(), content, "Your application is approve. ID:" + user.getAcademicId() + ", password:" + newPassword);
+
                 logger.info("UserService:updatePassword, Total Previous PWD::" + Arrays.toString(userDetails.getPreviousPassword().toArray()));
 
-                return "Successfully updated";
+                return "Successfully updated, check your email:: "+userDetails.getEmail();
             } else {
-                return "Incorrect previous password";
+                throw new RuntimeException("Incorrect previous password");
             }
         } else {
-            return "User not found";
+            throw new NotFoundException("Invalid User Academic id:: "+userId);
         }
     }
 
     public String forgetPassword(String userId) {
-        Optional<CustomUserDetails> userOptional = repository.findByUserId(userId);
+        Optional<CustomUserDetails> userOptional;
+        if (userId.contains("@")) {
+            userOptional = repository.findUserByEmail(userId);
+        } else {
+            userOptional = repository.findByAcademicId(userId);
+        }
 
         if (userOptional.isPresent()) {
             CustomUserDetails user = userOptional.get();
@@ -279,17 +288,17 @@ public class UserService {
             // Save the updated user details
             repository.save(user);
 
-            // Send a notification email with the new password
-            sendMail(user.getEmail(), user.getUsername(), user.getAcademicId(), generateRandomPassword);
+            String content = HtmlContentReplace.replaceHtmlUpdatePWDContent(user.getAcademicId(), generateRandomPassword);
+            sendMail("Password Update Confirmation", user.getEmail(), content, "Your application is approve. ID:" + user.getAcademicId() + ", password:" + generateRandomPassword);
 
-            return "Successfully updated";
+            return "Update password send to your ::"+user.getEmail();
         } else {
             return "User not found";
         }
     }
 
     public String disableAccount(String userId) {
-        Optional<CustomUserDetails> user = repository.findByUserId(userId);
+        Optional<CustomUserDetails> user = repository.findByAcademicId(userId);
         if (user.isPresent()) {
             user.get().setEnabled(false);
             repository.save(user.get());
@@ -299,7 +308,7 @@ public class UserService {
     }
 
     public String enableAccount(String userId) {
-        Optional<CustomUserDetails> user = repository.findByUserId(userId);
+        Optional<CustomUserDetails> user = repository.findByAcademicId(userId);
         if (user.isPresent()) {
             user.get().setEnabled(true);
             repository.save(user.get());
@@ -309,7 +318,7 @@ public class UserService {
     }
 
     public String accountLocked(String userId) {
-        Optional<CustomUserDetails> user = repository.findByUserId(userId);
+        Optional<CustomUserDetails> user = repository.findByAcademicId(userId);
         if (user.isPresent()) {
             user.get().setAccountNonLocked(false); // Set accountNonLocked to false to lock the account
             repository.save(user.get());
@@ -319,7 +328,7 @@ public class UserService {
     }
 
     public String accountUnLocked(String userId) {
-        Optional<CustomUserDetails> user = repository.findByUserId(userId);
+        Optional<CustomUserDetails> user = repository.findByAcademicId(userId);
         if (user.isPresent()) {
             user.get().setAccountNonLocked(true); // Set accountNonLocked to true to unlock the account
             repository.save(user.get());
@@ -329,7 +338,7 @@ public class UserService {
     }
 
     public String accountExpired(String userId) {
-        Optional<CustomUserDetails> user = repository.findByUserId(userId);
+        Optional<CustomUserDetails> user = repository.findByAcademicId(userId);
         if (user.isPresent()) {
             user.get().setAccountNonExpired(false); // Set accountNonExpired to false to expire the account
             repository.save(user.get());
@@ -339,7 +348,7 @@ public class UserService {
     }
 
     public String accountRenew(String userId) {
-        Optional<CustomUserDetails> user = repository.findByUserId(userId);
+        Optional<CustomUserDetails> user = repository.findByAcademicId(userId);
         if (user.isPresent()) {
             user.get().setAccountNonExpired(true); // Set accountNonExpired to true to renew the account
             repository.save(user.get());
@@ -348,22 +357,15 @@ public class UserService {
         return "User not found";
     }
 
-    private void sendMail(String email, String userName, String userId, String password) {
-        // Read email template file content
-        String fileContent = "<!DOCTYPE html>\r\n" + "<html>\r\n" + "<head>\r\n" + "    <style>\r\n" + "        body {\r\n" + "            margin: 0;\r\n" + "            padding: 0;\r\n" + "            display: flex;\r\n" + "            justify-content: center;\r\n" + "            align-items: center;\r\n" + "            font-family: 'Arial', sans-serif;\r\n" + "            background-color: #f4f4f4;\r\n" + "        }\r\n" + "\r\n" + "    .container {\r\n" + "    background-image: url(https://img.freepik.com/free-photo/3d-render-pen-with-notebook_23-2150800905.jpg?t=st=1700529544~exp=1700533144~hmac=d76d5dc3e3862338d2ccefd0498dc838e51f87271bf35eece13aafe16f5387f7&w=740);\r\n" + "    background-position: center;\r\n" + "    background-size: contain;\r\n" + "    background-repeat: no-repeat;\r\n" + "    max-width: 640px;\r\n" + "    margin: 0 auto;\r\n" + "    margin-top: 15px;\r\n" + "    padding: 20px;\r\n" + "    padding-bottom: 0px;\r\n" + "    border-radius: 5px;\r\n" + "    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);\r\n" + "    overflow: hidden;\r\n" + "    background-color: #fff;\r\n" + "    position: relative;\r\n" + "    }\r\n" + "\r\n" + ".container::after {\r\n" + "    content: \"\";\r\n" + "    position: absolute;\r\n" + "    top: 0;\r\n" + "    left: 0;\r\n" + "    right: 0;\r\n" + "    bottom: 0;\r\n" + "    background-color: rgba(7, 7, 7, 0.17);\r\n" + "}\r\n" + "\r\n" + "\r\n" + "        h2 {\r\n" + "            color: #333;\r\n" + "        }\r\n" + "\r\n" + "        p {\r\n" + "            font-size: 16px;\r\n" + "            line-height: 1.6;\r\n" + "        }\r\n" + "\r\n" + "        .button {\r\n" + "            display: inline-block;\r\n" + "            padding: 10px 20px;\r\n" + "            background-color: #007BFF;\r\n" + "            color: #fff;\r\n" + "            text-decoration: none;\r\n" + "            border-radius: 5px;\r\n" + "        }\r\n" + "\r\n" + "        .button:hover {\r\n" + "            background-color: #0056b3;\r\n" + "        }\r\n" + "    </style>\r\n" + "</head>\r\n" + "<body>\r\n" + "<table >\r\n" + "    \r\n" + "    <tr>\r\n" + "        <td>\r\n" + "            <div class=\"container\">\r\n" + "                <div style=\"width: 110%; margin-top: -20px; margin-left: -26px; height: 16px; background: #214689;\"></div>\r\n" + "                <h2>Account Credential</h2>\r\n" + "                <p>Dear #user#,</p>\r\n" + "                <p>We hope this message finds you well. We kindly request you to change your password first password generated by system, but if you updated then plz delete this message</p>\r\n" + "                <p>UserId: <b>#userId#</b></p>\r\n" + "                <p>Password: <b>#password#</b></p>\r\n" + "                <p>Your prompt attention to this matter is greatly appreciated, and it will help streamline the admission process.</p>\r\n" + "                <p>If you have any questions or need further information, please feel free to contact </p>\r\n" + "                <p>Thank you for your cooperation.</p>\r\n" + "                <div style=\"width: 110%; margin-left: -26px; height: 16px; background: #214689;\"></div>\r\n" + "            </div>\r\n" + "        </td>\r\n" + "    </tr>\r\n" + "</table>\r\n" + "</body>\r\n" + "</html>\r\n" + "";
 
-        // Replace placeholders in the email template
-        String modifiedContent = fileContent.replace("#user#", userName).replace("#userId#", userId).replace("#password#", password);
+    private void sendMail(String subject, String userEmail, String htmlContent, String text) {
 
-        // Send an email with user credentials
         MailDto dto = new MailDto();
-        dto.setTo(Collections.singletonList(email));
-        dto.setSubject("Account Credential");
-        dto.setHtmlString(modifiedContent);
-        dto.setTextBody("User Account Credentials");
+        dto.setSubject(subject);
+        dto.setTextBody(text);
+        dto.setTo(Collections.singletonList(userEmail));
+        dto.setHtmlString(htmlContent);
         emailService.sendEmailWithAttachment(dto);
-        System.out.println("Mail sent::" + email);
-
     }
 
     private boolean isValidEmail(String email) {

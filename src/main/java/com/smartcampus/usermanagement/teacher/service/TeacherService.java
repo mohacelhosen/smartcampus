@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 @Service
 public class TeacherService {
@@ -146,11 +147,23 @@ public class TeacherService {
         return teacherRepository.findAll();
     }
     @Transactional
-    public String nextTeacherId() {
+    public String nextTeacherId(String searchEmail) {
+        // Check if a teacher with the given email already exists
+        List<Teacher> existingTeachersWithEmail = teacherRepository.findAll().stream()
+                .filter(teacher -> teacher.getEmail() != null && teacher.getEmail().equalsIgnoreCase(searchEmail))
+                .collect(Collectors.toList());
+
+        if (!existingTeachersWithEmail.isEmpty()) {
+            Teacher existingTeacher = existingTeachersWithEmail.get(0);
+            if (existingTeacher.getTeacherAcademicId() != null && !existingTeacher.getTeacherAcademicId().isEmpty()) {
+                throw new RuntimeException("Teacher already has academic ID");
+            }
+        }
+
         List<Teacher> teacherList = teacherRepository.findAll();
 
         int maxTeacherId = teacherList.stream()
-                .filter(teacher -> teacher.getTeacherAcademicId() != null)  // Add this filter
+                .filter(teacher -> teacher.getTeacherAcademicId() != null)
                 .mapToInt(teacher -> {
                     try {
                         return Integer.parseInt(teacher.getTeacherAcademicId());
@@ -164,6 +177,8 @@ public class TeacherService {
 
         return String.valueOf(maxTeacherId + 1);
     }
+
+
 
 
 

@@ -32,11 +32,16 @@ public class JwtService {
 	Logger logger = LoggerFactory.getLogger(JwtService.class);
 	public static final String SECRET = "79a9ef48bc06cb4b9c9ac9867a3197fb13a98e0684b478b97cf931b6afdb6ad2";
 	@Autowired
-	private UserRepository repository;
+	private UserRepository userRepository;
 
 	// generate token
 	public String generateToken(String userId) {
-		Optional<CustomUserDetails> userEntity = repository.findByUserId(userId);
+		Optional<CustomUserDetails> userEntity;
+		if (userId.contains("@")) {
+			userEntity = userRepository.findUserByEmail(userId);
+		} else {
+			userEntity = userRepository.findByAcademicId(userId);
+		}
 		if (userEntity.isPresent()) {
 			CustomUserDetails user = userEntity.get();
 			Collection<? extends GrantedAuthority> authorities = user.getAuthorities();

@@ -27,7 +27,7 @@ public class ClassAnnouncementService {
     private StudentService studentService;
     @Autowired
     private CourseService courseService;
-    public ClassAnnouncement createAnnouncement(String teacherAcademicId, String departmentCode, Integer semesterNumber, String courseCode, String classStartTime){
+    public ClassAnnouncement createAnnouncement(String teacherAcademicId, String departmentCode, Integer semesterNumber, String courseCode, String classStartTime, String institutionCode){
 
         List<ClassAnnouncement> announcementList = classAnnouncementRepository.findAllByDepartmentCodeAndSemesterNumber(departmentCode, semesterNumber);
         Optional<ClassAnnouncement> maxAnnouncement = announcementList.stream().max(Comparator.comparing(ClassAnnouncement::getAnnouncementNumber));
@@ -35,7 +35,7 @@ public class ClassAnnouncementService {
         Integer lastAnnouncementNumber = maxAnnouncement.map(ClassAnnouncement::getAnnouncementNumber).orElse(0);
 
 
-        Course course = courseService.findByCourseCode(courseCode);
+        Course course = courseService.findByCourseCode(courseCode, institutionCode);
         Teacher teacher = teacherService.findTeacherByTeacherId(teacherAcademicId);
 
         ClassAnnouncement announcement =new ClassAnnouncement();

@@ -23,9 +23,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-		Optional<CustomUserDetails> userInfo = userRepository.findByUserId(userId);
-		logger.info("CustomUserDetailsService::loadUserByUsername, Full Name:{},  Role:{}, Authority:{}", userInfo.get().getFullName(), userInfo.get().getRole(), Arrays.toString(userInfo.get().getAuthorities().toArray()));
-		return userInfo.orElseThrow(() -> new UsernameNotFoundException("user not found " + userId));
+		Optional<CustomUserDetails> userEntity;
+		if (userId.contains("@")) {
+			userEntity = userRepository.findUserByEmail(userId);
+		} else {
+			userEntity = userRepository.findByAcademicId(userId);
+		}
+		logger.info("CustomUserDetailsService::loadUserByUsername, Full Name:{},  Role:{}, Authority:{}", userEntity.get().getFullName(), userEntity.get().getRole(), Arrays.toString(userEntity.get().getAuthorities().toArray()));
+		return userEntity.orElseThrow(() -> new UsernameNotFoundException("user not found " + userId));
 	}
 
 }

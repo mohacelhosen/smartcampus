@@ -23,16 +23,23 @@ public class UserRoleController {
         ApiResponse<UserRole> response = new ApiResponse<>();
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         response.setEndpoint("/api/v1/university/role/register-new-role");
-        UserRole role = roleService.registerNewRole(userRole);
-        response.setData(role);
-        response.setMessage("Register new Role successfully");
-        response.setStatus(HttpStatus.CREATED.value());
         response.setTimestamp(time);
-        return  new ResponseEntity<>(response, HttpStatus.CREATED);
+        try{
+            UserRole role = roleService.registerNewRole(userRole);
+            response.setData(role);
+            response.setMessage("Register new Role successfully");
+            response.setStatus(HttpStatus.CREATED.value());
+            return  new ResponseEntity<>(response, HttpStatus.CREATED);
+        }catch (Exception e){
+            response.setData(null);
+            response.setMessage(e.getMessage());
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return  new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<ApiResponse<List<UserRole>>> getAllUserRoles(@RequestBody UserRole userRole){
+    @GetMapping("/register")
+    public ResponseEntity<ApiResponse<List<UserRole>>> getAllUserRoles( ){
         ApiResponse<List<UserRole>> response = new ApiResponse<>();
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         response.setEndpoint("/api/v1/university/role/register");

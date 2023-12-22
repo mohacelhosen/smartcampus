@@ -80,6 +80,13 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(model, HttpStatus.ALREADY_REPORTED);
 	}
 
+	@ExceptionHandler(RegistrationFailedException.class)
+	public ResponseEntity<ExceptionModel> registrationFailed(RegistrationFailedException registrationFailedException) {
+		ExceptionModel model = new ExceptionModel();
+		model.setCode("RNF-404");
+		model.setExceptionName(registrationFailedException.getMessage());
+		return new ResponseEntity<>(model, HttpStatus.ALREADY_REPORTED);
+	}
 	@ExceptionHandler(TokenValidationException.class)
 	public ResponseEntity<ExceptionModel> resourcesNotFound(TokenValidationException tokenValidationException) {
 		ExceptionModel model = new ExceptionModel();
@@ -87,6 +94,6 @@ public class GlobalExceptionHandler {
 		model.setExceptionName(tokenValidationException.getMessage());
 		return new ResponseEntity<>(model, HttpStatus.UNAUTHORIZED);
 	}
-	
+
 
 }

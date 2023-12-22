@@ -3,7 +3,6 @@ package com.smartcampus.usermanagement.common;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 
 import java.time.LocalDate;
 
@@ -12,6 +11,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class User {
     private String registrationId;
+    private String institutionName;
+    private String institutionCode;
     private String firstName;
     private String lastName;
     private String nickName;

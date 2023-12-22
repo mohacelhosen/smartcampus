@@ -9,8 +9,8 @@ import org.springframework.data.mongodb.repository.Query;
 import com.smartcampus.security.model.CustomUserDetails;
 
 public interface UserRepository extends MongoRepository<CustomUserDetails, String> {
-	@Query("{'userId':?0}")
-	Optional<CustomUserDetails> findByUserId(String userId);
+	@Query("{'academicId':?0}")
+	Optional<CustomUserDetails> findByAcademicId(String userId);
 
 	@Query("{'email':?0}")
 	Optional<CustomUserDetails> findUserByEmail(String email);

@@ -20,6 +20,8 @@ public class Course {
 	private String courseCode;
 	private String courseCredits;
 	private Boolean courseOptional;
+	private String institutionName;
+	private String institutionCode;
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private ModelLocalDateTime createdDateTime;
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)

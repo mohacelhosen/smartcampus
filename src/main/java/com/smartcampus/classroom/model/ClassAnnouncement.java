@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class ClassAnnouncement {
     @Id
     private String id;
+    private String institutionCode;
     private String classTitle;
     private String teacherName;
     private String teacherAcademicId;

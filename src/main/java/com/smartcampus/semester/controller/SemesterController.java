@@ -43,13 +43,13 @@ public class SemesterController {
         }
     }
     @PostMapping("/add-course-teacher-class")
-    public ResponseEntity<ApiResponse<Semester>> addCourseTeacherClass(@RequestParam String semesterCode, @RequestParam String courseCode, @RequestParam String teacherId, @RequestParam String classJoinCode) {
+    public ResponseEntity<ApiResponse<Semester>> addCourseTeacherClass(@RequestParam String semesterCode, @RequestParam String courseCode, @RequestParam String teacherId, @RequestParam String classJoinCode, @RequestParam String institutionCode) {
         ApiResponse<Semester> response = new ApiResponse<>();
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         response.setTimestamp(time);
         response.setEndpoint("/api/v1/university/semester/add-course-teacher-class");
         try {
-            Semester registerSemester = semesterService.addCourseAndTeacherAndClass( semesterCode,  courseCode,  teacherId,  classJoinCode);
+            Semester registerSemester = semesterService.addCourseAndTeacherAndClass( semesterCode,  courseCode,  teacherId,  classJoinCode, institutionCode);
             response.setData(registerSemester);
             response.setStatus(HttpStatus.CREATED.value());
             logger.info("SemesterController::addCourseTeacherClass, successfully added Course Teacher and  Class in Semester. Timestamp:{}, ",time);

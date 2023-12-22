@@ -102,7 +102,8 @@ public class ClassController {
 				classAnnouncement.getDepartmentCode(),
 				classAnnouncement.getSemesterNumber(),
 				classAnnouncement.getCourseCode(),
-				classAnnouncement.getClassStartSession()
+				classAnnouncement.getClassStartSession(),
+				classAnnouncement.getInstitutionCode()
 		);
 		ApiResponse<ClassAnnouncement> response = new ApiResponse<>(200, "Announcement created successfully", createdAnnouncement,time, "/api/v1/university/classroom/create-class-announcement");
 		return new ResponseEntity<>(response, HttpStatus.OK);

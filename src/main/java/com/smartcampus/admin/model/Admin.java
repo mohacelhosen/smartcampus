@@ -2,29 +2,19 @@ package com.smartcampus.admin.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import com.smartcampus.usermanagement.common.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-/*
-{
-	"userId": "string",
-	"email": "string",
-	"fullName": "string",
-	"role": "string"
-}
-*/
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Document
-public class Admin {
+public class Admin  extends User{
 	@Id
 	private String id;
-	private String userId;
-	private String email;
-	private String fullName;
-	private String role;
-	private String password;
-	private String creationTime;
+	private String roles;
+	private String academicId;
 }

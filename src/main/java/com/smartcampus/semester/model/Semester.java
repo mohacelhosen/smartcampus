@@ -26,5 +26,4 @@ public class Semester {
     private ModelLocalDateTime createdDateTime;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private ModelLocalDateTime updateDateTime;
-    private String createdBy;
 }

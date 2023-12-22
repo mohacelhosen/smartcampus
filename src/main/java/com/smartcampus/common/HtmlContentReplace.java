@@ -36,14 +36,28 @@ public class HtmlContentReplace {
         }
     }
 
-    public static String replaceHtmlApproveContent( String academicId, String password, String teacherStudent ){
+    public static String replaceHtmlApproveContent( String academicId, String password, String teacherStudent, String userName ){
         String filePath = "Templates/userid-password.html";
         Path path = Paths.get(filePath);
         try{
             String originalContent = Files.readString(path);
             originalContent = originalContent.replace("[|#userId#|]",academicId);
+            originalContent = originalContent.replace("[|###userName###|]",userName);
             originalContent = originalContent.replace("[|#password#|]",password);
             originalContent = originalContent.replace("[|#teacherstudent#|]",teacherStudent);
+            return originalContent;
+        } catch (IOException e) {
+            throw new RuntimeException("Error occurred during file content reading");
+        }
+    }
+
+    public static String replaceHtmlUpdatePWDContent( String academicId, String password ){
+        String filePath = "Templates/update-password.html";
+        Path path = Paths.get(filePath);
+        try{
+            String originalContent = Files.readString(path);
+            originalContent = originalContent.replace("[|#userId#|]",academicId);
+            originalContent = originalContent.replace("[|#password#|]",password);
             return originalContent;
         } catch (IOException e) {
             throw new RuntimeException("Error occurred during file content reading");
