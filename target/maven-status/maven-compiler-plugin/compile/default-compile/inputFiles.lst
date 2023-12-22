@@ -72,10 +72,12 @@ E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\announcement\model\Eve
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\admin\repository\AdminRepository.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\model\Exam.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\usermanagement\common\CurrentAddress.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Institution\model\Institution.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\admin\model\Admin.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\filemngt\controller\CommonFileController.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\exception\IncompleteUserInfoException.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\role\service\UserRoleService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Institution\repository\InstitutionRepository.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\usermanagement\student\model\StudentBillingAndFinancialInformation.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\usermanagement\teacher\service\TeacherService.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\model\ClassAnnouncement.java
@@ -116,6 +118,7 @@ E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\filemngt\controller\Au
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\announcement\model\HolidayAnnouncement.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\common\RandomPasswordGenerator.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\role\model\UserRole.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Institution\service\InstitutionService.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\busTracking\model\BusTracking.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\semester\repository\SemesterRepository.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\model\Notes.java
@@ -126,6 +129,7 @@ E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\repoository\
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\model\Attendance.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\semester\model\CourseAndTeacherAndClass.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\admin\service\AdminService.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\Institution\controller\InstitutionController.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\usermanagement\student\model\PreviousEducation.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\service\ExamService.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\filemngt\model\Photo.java
@@ -139,6 +143,7 @@ E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\service\Clas
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\exception\IllegalArgument.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\security\config\WebConfig.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\usermanagement\teacher\model\TeachingExperience.java
+E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\exception\RegistrationFailedException.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\admin\model\StudentApprove.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\classroom\model\ContactInfo.java
 E:\Smart Campus\smartcampus\src\main\java\com\smartcampus\security\model\ActivateModel.java

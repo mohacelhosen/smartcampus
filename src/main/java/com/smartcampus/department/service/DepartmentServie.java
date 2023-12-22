@@ -66,8 +66,9 @@ public class DepartmentServie {
                 Semester semester = new Semester();
                 semester.setDepartmentCode(savedDepartment.getDepartmentCode());
                 semester.setDepartmentName(savedDepartment.getDepartmentName());
+                semester.setInstitutionCode(department.getInstitutionCode());
                 semester.setSemesterNumber(i);
-                semester.setSemesterCode(savedDepartment.getDepartmentGroupCode()+"-"+savedDepartment.getDepartmentCode()+"-"+i);
+                semester.setSemesterCode(savedDepartment.getInstitutionCode()+"-"+savedDepartment.getDepartmentGroupCode()+"-"+savedDepartment.getDepartmentCode()+"-"+i);
                 semesterService.registerSemester(semester);
             }
         } else {

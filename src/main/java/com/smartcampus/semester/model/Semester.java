@@ -21,6 +21,7 @@ public class Semester {
     private String departmentCode;
     private Integer semesterNumber;
     private String semesterCode;
+    private String institutionCode;
     private List<CourseAndTeacherAndClass> courseAndTeacherAndClasses;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private ModelLocalDateTime createdDateTime;
