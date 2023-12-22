@@ -33,8 +33,8 @@ public class ClassController {
 	private ClassAnnouncementService classAnnouncementService;
 	@PostMapping("/register")
 //	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_TEACHER', 'ROLE_DEVELOPER')")
-	public ResponseEntity<SingleClass> registerSingleClass(@RequestBody SingleClass sinlgeClass) {
-		SingleClass save = singleClassService.save(sinlgeClass);
+	public ResponseEntity<SingleClass> registerSingleClass(@RequestBody SingleClass singleClass) {
+		SingleClass save = singleClassService.save(singleClass);
 		return new ResponseEntity<>(save, HttpStatus.OK);
 	}
 

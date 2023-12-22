@@ -31,6 +31,7 @@ public class SingleClass {
 	private String classRoomNumber; // physical class room
 	private String teacherName;
 	private String teacherEmail;
+	private String institutionCode;
 	private List<String> teacherContact;
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private Integer totalStudent;

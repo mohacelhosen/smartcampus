@@ -107,7 +107,7 @@ public class UserRestController {
 
     }
 
-    @GetMapping("/add-new-role")
+    @PostMapping("/add-new-role")
     public ResponseEntity<ApiResponse<CustomUserDetails>> addRole(@RequestParam String userEmail, @RequestParam String addNewRole) {
         ApiResponse<CustomUserDetails> response = new ApiResponse<>();
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();

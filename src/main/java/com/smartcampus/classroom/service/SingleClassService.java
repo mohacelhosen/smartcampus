@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import com.smartcampus.usermanagement.student.model.StudentEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,15 +24,9 @@ public class SingleClassService {
 	public SingleClass save(SingleClass singleClass) {
 		String classCode = String.valueOf(UUID.randomUUID().getMostSignificantBits()).replace("-", "");
 		singleClass.setClassJoinCode(classCode);
-		if (singleClass.getStudents() != null && !singleClass.getStudents().isEmpty()) {
-			singleClass.setTotalStudent(singleClass.getStudents().size());
-		} else {
-			singleClass.setTotalStudent(0);
-		}
-		SingleClass dbClass = singleClassRepository.save(singleClass);
-		dbClass.setTotalStudent(dbClass.getStudents().size());
-		return dbClass;
+		return singleClassRepository.save(singleClass);
 	}
+
 
 	public SingleClass update(String classId, SingleClass updatedClass) {
 		Optional<SingleClass> optionalDbClass = singleClassRepository.findById(classId);

@@ -43,13 +43,13 @@ public class SemesterController {
         }
     }
     @PostMapping("/add-course-teacher-class")
-    public ResponseEntity<ApiResponse<Semester>> addCourseTeacherClass(@RequestParam String semesterCode, @RequestParam String courseCode, @RequestParam String teacherId, @RequestParam String classJoinCode, @RequestParam String institutionCode) {
+    public ResponseEntity<ApiResponse<Semester>> addCourseTeacherClass(@RequestParam String semesterCode, @RequestParam String courseCode, @RequestParam String teacherRegistrationId, @RequestParam String classJoinCode, @RequestParam String institutionCode) {
         ApiResponse<Semester> response = new ApiResponse<>();
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         response.setTimestamp(time);
         response.setEndpoint("/api/v1/university/semester/add-course-teacher-class");
         try {
-            Semester registerSemester = semesterService.addCourseAndTeacherAndClass( semesterCode,  courseCode,  teacherId,  classJoinCode, institutionCode);
+            Semester registerSemester = semesterService.addCourseAndTeacherAndClass( semesterCode,  courseCode,  teacherRegistrationId,  classJoinCode, institutionCode);
             response.setData(registerSemester);
             response.setStatus(HttpStatus.CREATED.value());
             logger.info("SemesterController::addCourseTeacherClass, successfully added Course Teacher and  Class in Semester. Timestamp:{}, ",time);
@@ -58,7 +58,7 @@ public class SemesterController {
             response.setMessage(e.getMessage());
             response.setData(null);
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            logger.info("SemesterController::addCourseTeacherClass,  fail  to add Course Teacher and  Class  in semester. Timestamp:{},  semesterCode:{}, courseCode:{}, teacherId:{}, classJoinCode:{}, Message:{}",time, semesterCode,courseCode,teacherId,classJoinCode, e.getMessage(), e);
+            logger.info("SemesterController::addCourseTeacherClass,  fail  to add Course Teacher and  Class  in semester. Timestamp:{},  semesterCode:{}, courseCode:{}, teacherId:{}, classJoinCode:{}, Message:{}",time, semesterCode,courseCode,teacherRegistrationId,classJoinCode, e.getMessage(), e);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
