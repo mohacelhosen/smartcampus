@@ -44,6 +44,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 		if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 			UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+			logger.info( "JwtAuthFilter::doFilterInternal,  Authorities: "+ userDetails.getAuthorities());
 			if (jwtService.validateToken(token, userDetails)) {
 				logger.info("JwtAuthFilter: Token validated successfully for user: " + userId);
 

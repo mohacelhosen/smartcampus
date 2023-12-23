@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ContactInfo {
+	private String institutionCode;
 	private String crName;
 	private String crContactNumber;
 }

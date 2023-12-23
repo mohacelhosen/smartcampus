@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Objective {
+	private String institutionCode;
 	private String title;
 	private String description;
 	private ModelLocalDateTime dateTime = new ModelLocalDateTime(null);

@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 public class Exam {
 	@Id
 	private String id;
+	private String institutionCode;
 	private String classId;
 	private String classTitle;
 	private String classDescription;

@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 public class Submission {
+	private String institutionCode;
 	private String studentId; // The student who submitted the assignment
 	private String submissionText; // Text submitted by the student
 	private List<String> attachmentDocumentIds; // id of attachments submitted by the student

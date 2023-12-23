@@ -145,7 +145,7 @@ public class AdminService {
             throw new NotFoundException("Teacher not Found, Registration Id: " + teacherApprove.getTeacherRegistrationId());
         }
 
-        String teacherAcademicId = teacherService.nextTeacherId(dbTeacher.getEmail());
+        String teacherAcademicId = teacherService.nextTeacherId(dbTeacher.getEmail(), dbTeacher.getInstitutionCode());
         String teacherRegistrationId = teacherApprove.getTeacherRegistrationId();
         String role = "Teacher";
 
@@ -158,7 +158,7 @@ public class AdminService {
 
         Teacher teacher = teacherService.approveTeacher(teacherAcademicId, teacherApprove);
         String content = HtmlContentReplace.replaceHtmlApproveContent(teacherAcademicId, register.getPassword(), "TEACHER", register.getFullName());
-        sendMail("Application approve", teacher.getEmail(), content, "Your application is approve. ID:" + teacherAcademicId + ", password:" + register.getPassword());
+        sendMail("Official Approval: You're Now a Recognized Teacher with Us!", teacher.getEmail(), content, "Your application is approve. ID:" + teacherAcademicId + ", password:" + register.getPassword());
 
         if (teacher == null) {
             throw new NotFoundException("Teacher not Found, Registration Id: " + teacherRegistrationId);

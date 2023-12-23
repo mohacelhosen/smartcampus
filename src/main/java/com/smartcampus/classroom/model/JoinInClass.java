@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JoinInClass {
+	private String institutionCode;
 	private String academicId;
 	private String studentName;
 	private String classJoinCode;

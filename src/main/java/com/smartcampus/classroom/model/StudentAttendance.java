@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StudentAttendance {
+	private String institutionCode;
 	private String studentId;
 	private String studentName;
 	private boolean isPresent;

@@ -145,8 +145,8 @@ public class SingleClassService {
 		return "Invalid joining code!";
 	}
 
-	public List<SingleClass> getAllClassByStudentId(String academicId) {
-		return singleClassRepository.findByStudentsAcademicId(academicId);
+	public List<SingleClass> getAllClassByStudentId(String academicId, String institutionCode) {
+		return singleClassRepository.findByStudentsAcademicId(academicId, institutionCode);
 	}
 
 	public List<SingleClass> getAllClassByTeacherId(String teacherId) {
@@ -157,8 +157,8 @@ public class SingleClassService {
 		return singleClassRepository.findAll();
 	}
 
-	public List<StudentInfoForClassRoom> singleClassStudents(String classId) {
-		List<SingleClass> classes = singleClassRepository.findAllStudentIdsAndNames(classId);
+	public List<StudentInfoForClassRoom> singleClassStudents(String classId, String institutionCode) {
+		List<SingleClass> classes = singleClassRepository.findAllStudentIdsAndNames(classId, institutionCode);
 
 		List<StudentInfoForClassRoom> studentInfoList = new ArrayList<>();
 

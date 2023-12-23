@@ -41,22 +41,22 @@ public class SemesterService {
         }
     }
 
-    public Semester addCourseAndTeacherAndClass(String semesterCode, String courseCode, String teacherId, String classJoinCode, String institutionCode) {
-        Optional<Semester> optionalSemester = semesterRepository.findBySemesterCode(semesterCode);
+    public Semester addCourseAndTeacherAndClass(String semesterCode, String courseCode, String teacherRegistrationId, String classJoinCode, String institutionCode) {
+        Optional<Semester> optionalSemester = semesterRepository.findBySemesterCode(semesterCode,  institutionCode);
         if (optionalSemester.isEmpty()) {
-            throw new NotFoundException("Semester id is not valid. ID: " + semesterCode);
+            throw new NotFoundException("Semester courseCode is not valid. semester Code: " + semesterCode);
         }
 
         Optional<Course> optionalCourse = courseRepository.findByCourseCode(courseCode, institutionCode);
         if (optionalCourse.isEmpty()) {
-            throw new NotFoundException("Course id is not valid. ID: " + courseCode);
+            throw new NotFoundException("Course courseCode is not valid. ID: " + courseCode);
         }
 
-        Optional<Teacher> optionalTeacherById = teacherRepository.findByTeacherId(teacherId);
-        Optional<Teacher> optionalTeacherByRegId = teacherRepository.findByRegistrationId(teacherId);
+        Optional<Teacher> optionalTeacherById = teacherRepository.findByTeacherId(teacherRegistrationId);
+        Optional<Teacher> optionalTeacherByRegId = teacherRepository.findByRegistrationId(teacherRegistrationId);
 
         if (optionalTeacherById.isEmpty() && optionalTeacherByRegId.isEmpty()) {
-            throw new NotFoundException("Teacher id or registration id is not valid. ID: " + teacherId);
+            throw new NotFoundException("Teacher id or registration id is not valid. ID: " + teacherRegistrationId);
         }
 
         Optional<SingleClass> optionalSingleClass = classRepository.findByClassJoinCode(classJoinCode);
@@ -67,7 +67,7 @@ public class SemesterService {
         Semester semester = optionalSemester.get();
         Course course = optionalCourse.get();
 
-        Teacher teacher = optionalTeacherById.orElse(optionalTeacherByRegId.orElseThrow(() -> new NotFoundException("Teacher id or registration id is not valid. ID: " + teacherId)));
+        Teacher teacher = optionalTeacherById.orElse(optionalTeacherByRegId.orElseThrow(() -> new NotFoundException("Teacher id or registration id is not valid. ID: " + teacherRegistrationId)));
         SingleClass singleClass = optionalSingleClass.get();
 
         List<CourseAndTeacherAndClass> courseAndTeacherAndClasses = semester.getCourseAndTeacherAndClasses();
@@ -91,8 +91,8 @@ public class SemesterService {
     }
 
 
-    public Semester findBySemesterCode(String semesterCode){
-        Optional<Semester> semesterOptional = semesterRepository.findBySemesterCode(semesterCode);
+    public Semester findBySemesterCode(String semesterCode, String institutionCode){
+        Optional<Semester> semesterOptional = semesterRepository.findBySemesterCode(semesterCode, institutionCode);
         if (semesterOptional.isEmpty()){
             throw new RuntimeException("Semester code is not valid");
         }
@@ -107,8 +107,8 @@ public class SemesterService {
         return semesterRepository.findByDepartmentCode(departmentCode);
     }
 
-    public String deleteDepartment(String semesterCode){
-        Optional<Semester> semesterOptional = semesterRepository.findBySemesterCode(semesterCode);
+    public String deleteDepartment(String semesterCode, String institutionCode){
+        Optional<Semester> semesterOptional = semesterRepository.findBySemesterCode(semesterCode, institutionCode);
         if (semesterOptional.isEmpty()){
             throw new RuntimeException("Semester code is not valid");
         }
@@ -122,8 +122,8 @@ public class SemesterService {
                 && semester.getDepartmentCode() != null && !semester.getDepartmentCode().isEmpty() && !departmentAndSemesterExist(semester.getDepartmentCode(), semester.getSemesterNumber());
     }
 
-    private boolean codeExists(String code) {
-        return semesterRepository.findBySemesterCode(code).isPresent();
+    private boolean codeExists(String semesterCode, String institutionCode) {
+        return semesterRepository.findBySemesterCode(semesterCode, institutionCode).isPresent();
     }
     private boolean departmentAndSemesterExist(String departmentCode, Integer semesterNumber) {
         return   semesterRepository.findByDepartmentCodeAndSemesterNumber(departmentCode, semesterNumber).isPresent();

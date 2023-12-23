@@ -10,8 +10,8 @@ import java.util.Optional;
 
 public interface SemesterRepository extends MongoRepository<Semester, String> {
 
-    @Query("{'semesterCode': ?0}")
-    Optional<Semester> findBySemesterCode(String semesterCode);
+    @Query("{'semesterCode': ?0, 'institutionCode': ?1}")
+    Optional<Semester> findBySemesterCode(String semesterCode, String institutionCode);
     @Query("{'departmentCode': ?0}")
     List<Semester> findByDepartmentCode(String departmentCode);
 

@@ -64,10 +64,10 @@ public class SemesterController {
     }
 
     @GetMapping("/get-semester-by-code")
-    public ResponseEntity<ApiResponse<Semester>> getSemesterByCode(@RequestParam String semesterCode) {
+    public ResponseEntity<ApiResponse<Semester>> getSemesterByCode(@RequestParam String semesterCode, @RequestParam String institutionCode) {
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         try {
-            Semester semester = semesterService.findBySemesterCode(semesterCode);
+            Semester semester = semesterService.findBySemesterCode(semesterCode, institutionCode);
             ApiResponse<Semester> response = new ApiResponse<>(200, "Semester retrieved successfully", semester,time, "/api/v1/university/semester/get-semester-by-code");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (RuntimeException e) {
@@ -89,10 +89,10 @@ public class SemesterController {
     }
 
     @DeleteMapping("/delete-semester-by-code")
-    public ResponseEntity<ApiResponse<String>> deleteSemesterByCode(@RequestParam String semesterCode) {
+    public ResponseEntity<ApiResponse<String>> deleteSemesterByCode(@RequestParam String semesterCode, @RequestParam String institutionCode) {
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         try {
-            String semesterStatus = semesterService.deleteDepartment(semesterCode);
+            String semesterStatus = semesterService.deleteDepartment(semesterCode, institutionCode);
             ApiResponse<String> response = new ApiResponse<>(200, "Semester deleted successfully", semesterStatus, time, "/api/v1/university/semester/delete-semester-by-code");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (RuntimeException e) {

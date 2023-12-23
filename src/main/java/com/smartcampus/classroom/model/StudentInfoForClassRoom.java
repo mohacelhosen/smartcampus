@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class StudentInfoForClassRoom {
 	private String academicId;
 	private String studentName;
-	private List<Notes> studetNote;
+	private String institutionCode;
+	private List<Notes> studentNote;
 }

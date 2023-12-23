@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Notes {
+	private String institutionCode;
 	private String noteId;
 	private String noteTitle;
 	private ModelLocalDateTime uploadedNoteDateTime = new ModelLocalDateTime(null);

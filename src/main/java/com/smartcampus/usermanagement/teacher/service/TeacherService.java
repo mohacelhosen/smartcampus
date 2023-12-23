@@ -53,12 +53,12 @@ public class TeacherService {
         List<CustomUserDetails> facultyHiring = userRepository.findAllByAuthorities(Collections.singletonList("ROLE_FACULTY_HIRING_COMMITTEE"));
 
         String registrationContent = HtmlContentReplace.replaceHtmlContent("teacher-registration", teacher.getFirstName(), userName, "Teacher", userEmail, registrationId);
-        sendMail("Teacher Registration " + teacher.getRegistrationId(), teacher.getEmail(), registrationContent, "We have received your application please wait for admin approval");
+        sendMail("Your Teacher Registration Application Has Been Received: " + teacher.getRegistrationId(), teacher.getEmail(), registrationContent, "We have received your application please wait for admin approval");
 
         for (CustomUserDetails facultyMember : facultyHiring) {
             executorService.execute(() -> {
                 String htmlContent = HtmlContentReplace.replaceHtmlContent("verify", facultyMember.getFullName(), userName, "Teacher", userEmail, registrationId);
-                sendMail("ASAP verify Teacher " + teacher.getRegistrationId(), facultyMember.getEmail(), htmlContent, "Please update the teacher application");
+                sendMail("Action Needed: Verify Teacher Application ASAP- " + teacher.getRegistrationId(), facultyMember.getEmail(), htmlContent, "Please update the teacher application");
             });
         }
 
@@ -147,16 +147,18 @@ public class TeacherService {
         return teacherRepository.findAll();
     }
     @Transactional
-    public String nextTeacherId(String searchEmail) {
+    public String nextTeacherId(String searchEmail, String institutionCode) {
         // Check if a teacher with the given email already exists
-        List<Teacher> existingTeachersWithEmail = teacherRepository.findAll().stream()
-                .filter(teacher -> teacher.getEmail() != null && teacher.getEmail().equalsIgnoreCase(searchEmail))
-                .collect(Collectors.toList());
+        List<Teacher> existingTeachersWithEmail = teacherRepository.findAllByInstitutionCode(institutionCode);
 
         if (!existingTeachersWithEmail.isEmpty()) {
-            Teacher existingTeacher = existingTeachersWithEmail.get(0);
-            if (existingTeacher.getTeacherAcademicId() != null && !existingTeacher.getTeacherAcademicId().isEmpty()) {
-                throw new RuntimeException("Teacher already has academic ID");
+            for (Teacher singleTeacher:existingTeachersWithEmail ){
+                if (singleTeacher.getEmail() != null &&
+                        singleTeacher.getEmail().equalsIgnoreCase(searchEmail) &&
+                        singleTeacher.getTeacherAcademicId() != null &&
+                        !singleTeacher.getTeacherAcademicId().isEmpty()) {
+                    throw new RuntimeException("Teacher already has an academic ID");
+                }
             }
         }
 
@@ -168,7 +170,6 @@ public class TeacherService {
                     try {
                         return Integer.parseInt(teacher.getTeacherAcademicId());
                     } catch (NumberFormatException e) {
-                        // Handle or log the exception as needed
                         return 0;  // Return a default value or skip the value
                     }
                 })

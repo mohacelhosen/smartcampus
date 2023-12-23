@@ -51,7 +51,7 @@ public class JwtService {
 			claims.put("userName", user.getFullName());
 			claims.put("userId", user.getAcademicId());
 
-			return createToken(claims, userId);
+			return createToken(claims, userEntity.get().getAcademicId());
 		} else {
 			// Handle the case when the user does not exist in the database
 			throw new UserNotFoundException("User not found for this ID:: " + userId);
@@ -101,6 +101,8 @@ public class JwtService {
 	public Boolean validateToken(String token, UserDetails userDetails) {
 		try {
 			final String username = extractUserAcademicID(token);
+			logger.info("JwtService::validateToken,  Token Subject: {}",username);
+			logger.info("JwtService::validateToken,  User Name: {}",userDetails.getUsername());
 
 			// Check if the token's subject (userID) matches the UserDetails'
 			if (!username.equals(userDetails.getUsername())) {
