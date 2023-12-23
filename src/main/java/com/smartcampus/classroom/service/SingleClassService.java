@@ -6,7 +6,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import com.smartcampus.course.model.Course;
+import com.smartcampus.course.service.CourseService;
+import com.smartcampus.exception.NotFoundException;
 import com.smartcampus.usermanagement.student.model.StudentEntity;
+import com.smartcampus.usermanagement.teacher.model.Teacher;
+import com.smartcampus.usermanagement.teacher.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +26,39 @@ public class SingleClassService {
 	@Autowired
 	private SingleClassRepository singleClassRepository;
 
+	@Autowired
+	private CourseService courseService;
+
+	@Autowired
+	private TeacherService teacherService;
+
+
+	/***
+	 {
+	 "teacherId": "100001",
+	 "institutionCode": "1064641",
+	 "classTitle": "Introduction of Programming",
+	 "courseCode": "IP-10",
+	 "courseCredit": "3",
+	 "classStatus": "Online",
+	 "classRoomNumber": "503",
+	 "teacherName": "Motaleb",
+	 "teacherEmail": "mdmotaleb.hosen101@gmail.com",
+	 "classCreatedBy": "Md. Mohacel Hosen"
+	 }
+	 */
 	public SingleClass save(SingleClass singleClass) {
 		String classCode = String.valueOf(UUID.randomUUID().getMostSignificantBits()).replace("-", "");
 		singleClass.setClassJoinCode(classCode);
+		Course dbCourse = courseService.findByCourseCode(singleClass.getCourseCode(), singleClass.getInstitutionCode());
+		if (dbCourse == null){
+			throw new NotFoundException("Invalid course courseCode: " + singleClass.getCourseCode());
+		}
+
+		Teacher teacher = teacherService.findTeacherByRegistration(singleClass.getTeacherByRegistrationId());
+		if (teacher == null){
+			throw new NotFoundException("Invalid teacher registration id: " + singleClass.getCourseCode());
+		}
 		return singleClassRepository.save(singleClass);
 	}
 
@@ -35,8 +70,8 @@ public class SingleClassService {
 			SingleClass dbClass = optionalDbClass.get();
 
 			// Update only the necessary fields
-			if (updatedClass.getTeacherId() != null && !updatedClass.getTeacherId().isEmpty()) {
-				dbClass.setTeacherId(updatedClass.getTeacherId());
+			if (updatedClass.getTeacherByRegistrationId() != null && !updatedClass.getTeacherByRegistrationId().isEmpty()) {
+				dbClass.setTeacherByRegistrationId(updatedClass.getTeacherByRegistrationId());
 			}
 
 			if (updatedClass.getClassTitle() != null && !updatedClass.getClassTitle().isEmpty()) {
