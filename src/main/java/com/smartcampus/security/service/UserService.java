@@ -45,7 +45,7 @@ public class UserService {
         String email = user.getEmail();
         boolean validEmail = isValidEmail(email);
         if (email != null && validEmail) {
-            Optional<CustomUserDetails> dbUser = repository.findUserByEmail(email);
+            Optional<CustomUserDetails> dbUser = repository.findByEmail(email);
             if (dbUser.isPresent()) {
                 throw new AlreadyExistsException("Already Registered");
             }
@@ -64,6 +64,9 @@ public class UserService {
                 switch (userRole.toUpperCase()) {
                     case "ADMIN":
                         user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_ADMIN));
+                        break;
+                    case "ADMISSION_OFFICER":
+                        user.setAuthorities(Collections.singletonList(GeneralConstants.ADMISSION_OFFICER));
                         break;
                     case "TEACHER":
                         user.setAuthorities(Collections.singletonList(GeneralConstants.ROLE_TEACHER));
@@ -155,7 +158,7 @@ public class UserService {
     }
 
     public CustomUserDetails addRole(String email, String userRole) {
-        Optional<CustomUserDetails> userOptional = repository.findUserByEmail(email);
+        Optional<CustomUserDetails> userOptional = repository.findByEmail(email);
 
         if (userOptional.isPresent()) {
             CustomUserDetails user = userOptional.get();
@@ -179,7 +182,7 @@ public class UserService {
     }
 
     public CustomUserDetails findByEmail(String email) {
-        return repository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found for email: " + email));
+        return repository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found for email: " + email));
     }
 
     // <------------------------ Login ------------------------->
@@ -191,7 +194,7 @@ public class UserService {
         logger.info("UserService::login, ❓loginInfo found::{}", true);
         Optional<CustomUserDetails> userEntity;
         if (loginInfo.getAcademicId().contains("@")) {
-            userEntity = repository.findUserByEmail(loginInfo.getAcademicId());
+            userEntity = repository.findByEmail(loginInfo.getAcademicId());
         } else {
             userEntity = getUserById(loginInfo.getAcademicId());
         }
@@ -264,7 +267,7 @@ public class UserService {
     public String forgetPassword(String userId) {
         Optional<CustomUserDetails> userOptional;
         if (userId.contains("@")) {
-            userOptional = repository.findUserByEmail(userId);
+            userOptional = repository.findByEmail(userId);
         } else {
             userOptional = repository.findByAcademicId(userId);
         }

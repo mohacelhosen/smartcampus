@@ -36,6 +36,13 @@ public class DepartmentServie {
     @Transactional
     public Department registerDepartment(Department department, Integer totalSemester) {
         if (valid(department)) {
+            if (department.getDepartmentCodeInNumber()>999 || department.getDepartmentCodeInNumber()<100){
+                throw new RuntimeException("Department Code Number Range (101-999)");
+            }
+            Optional<Department> departmentOptional = departmentRepository.findByInstitutionCodeAndDepartmentCodeInNumber(department.getInstitutionCode(), department.getDepartmentCodeInNumber());
+            if(departmentOptional.isPresent()){
+                throw new RuntimeException("Department Code Number already Exist, try different 3 digit.");
+            }
             department.setCreatedDateTime(new ModelLocalDateTime(null));
             department.setCourseList(null);
 
@@ -89,7 +96,7 @@ public class DepartmentServie {
 
     @Transactional
     public Department addCourseInDepartment(String departmentCode, String courseCode, String institutionCode) {
-        Optional<Department> optionalDepartment = departmentRepository.findByDepartmentCode(departmentCode);
+        Optional<Department> optionalDepartment = departmentRepository.findByDepartmentCodeAndInstitutionCode(departmentCode, institutionCode);
 
         if (optionalDepartment.isEmpty()) {
             throw new NotFoundException("Invalid department code: " + departmentCode);
@@ -121,7 +128,7 @@ public class DepartmentServie {
     }
 
     public Department updateDepartmentInfo(String departmentCode, Department department) {
-        Optional<Department> departmentOptional = departmentRepository.findByDepartmentCode(departmentCode);
+        Optional<Department> departmentOptional = departmentRepository.findByDepartmentCodeAndInstitutionCode(departmentCode, department.getInstitutionCode());
         if (departmentOptional.isEmpty()) {
             throw new NotFoundException("Invalid Department Id");
         }
@@ -138,8 +145,8 @@ public class DepartmentServie {
         return departmentRepository.findById(departmentId).orElseThrow(() -> new NotFoundException("Invalid department departmentCode: " + departmentId));
     }
 
-    public Department findByDepartmentCode(String departmentCode) {
-        return departmentRepository.findByDepartmentCode(departmentCode).orElseThrow(() -> new NotFoundException("Invalid department departmentCode: " + departmentCode));
+    public Department findByDepartmentCode(String departmentCode, String institutionCode) {
+        return departmentRepository.findByDepartmentCodeAndInstitutionCode(departmentCode, institutionCode).orElseThrow(() -> new NotFoundException("Invalid department departmentCode: " + departmentCode));
     }
 
     public List<Department> findAllDepartment() {
@@ -150,14 +157,14 @@ public class DepartmentServie {
         return department != null && department.getDepartmentName() != null && !department.getDepartmentName().isEmpty() && department.getDepartmentShortName() != null && !department.getDepartmentShortName().isEmpty();
     }
 
-    private boolean codeExists(String code) {
-        return departmentRepository.findByDepartmentCode(code).isPresent();
+    private boolean codeExists(String departmentCode, String institutionCode) {
+        return departmentRepository.findByDepartmentCodeAndInstitutionCode(departmentCode,institutionCode).isPresent();
     }
 
 
     @Transactional
-    public Department removeCourseByCourseId(String departmentCode, String courseCode) {
-        Optional<Department> departmentOptional = departmentRepository.findByDepartmentCode(departmentCode);
+    public Department removeCourseByCourseId(String departmentCode, String courseCode, String institutionCode) {
+        Optional<Department> departmentOptional = departmentRepository.findByDepartmentCodeAndInstitutionCode(departmentCode, institutionCode);
 
         if (departmentOptional.isEmpty()) {
             throw new NotFoundException("Invalid Department Id");

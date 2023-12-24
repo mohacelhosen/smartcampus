@@ -39,43 +39,48 @@ public class TeacherService {
     @Autowired
     private UserRepository userRepository;
 
-    public Teacher registerTeacher(Teacher teacher){
+    public Teacher registerTeacher(Teacher teacher) {
         Optional<Teacher> teacherOptional = teacherRepository.findByEmail(teacher.getEmail());
-        if (teacherOptional.isPresent()){
+        if (teacherOptional.isPresent()) {
             throw new AlreadyExistsException("User already registered");
         }
         String registrationId = RequestId.generateRequestId();
         teacher.setRegistrationId(registrationId);
         teacher.setCreatedDate(new ModelLocalDateTime(null));
-        String userName = teacher.getFirstName()+" "+teacher.getLastName();
+        String userName = teacher.getFirstName() + " " + teacher.getLastName();
         String userEmail = teacher.getEmail();
 
-        List<CustomUserDetails> facultyHiring = userRepository.findAllByAuthorities(Collections.singletonList("ROLE_FACULTY_HIRING_COMMITTEE"));
+        List<CustomUserDetails> facultyHiring = userRepository.findAllByAuthorities(Collections.singletonList("ROLE_FACULTY_HIRING_COMMITTEE"), teacher.getInstitutionCode());
 
         String registrationContent = HtmlContentReplace.replaceHtmlContent("teacher-registration", teacher.getFirstName(), userName, "Teacher", userEmail, registrationId);
         sendMail("Your Teacher Registration Application Has Been Received: " + teacher.getRegistrationId(), teacher.getEmail(), registrationContent, "We have received your application please wait for admin approval");
 
-        for (CustomUserDetails facultyMember : facultyHiring) {
-            executorService.execute(() -> {
-                String htmlContent = HtmlContentReplace.replaceHtmlContent("verify", facultyMember.getFullName(), userName, "Teacher", userEmail, registrationId);
-                sendMail("Action Needed: Verify Teacher Application ASAP- " + teacher.getRegistrationId(), facultyMember.getEmail(), htmlContent, "Please update the teacher application");
-            });
+        if (facultyHiring.size() == 1) {
+            String htmlContent = HtmlContentReplace.replaceHtmlContent("verify", facultyHiring.get(0).getFullName(), userName, "Teacher", userEmail, registrationId);
+            sendMail("Action Needed: Verify Teacher Application ASAP- " + teacher.getRegistrationId(), facultyHiring.get(0).getEmail(), htmlContent, "Please update the teacher application");
+        } else {
+            for (CustomUserDetails facultyMember : facultyHiring) {
+                executorService.execute(() -> {
+                    String htmlContent = HtmlContentReplace.replaceHtmlContent("verify", facultyMember.getFullName(), userName, "Teacher", userEmail, registrationId);
+                    sendMail("Action Needed: Verify Teacher Application ASAP- " + teacher.getRegistrationId(), facultyMember.getEmail(), htmlContent, "Please update the teacher application");
+                });
+            }
         }
 
         return teacherRepository.save(teacher);
     }
 
 
-    public Teacher approveTeacher(String teacherAcademicId,TeacherApprove teacherApprove){
+    public Teacher approveTeacher(String teacherAcademicId, TeacherApprove teacherApprove) {
         Optional<Teacher> teacherOptional = teacherRepository.findByRegistrationId(teacherApprove.getTeacherRegistrationId());
-        if (teacherOptional.isEmpty()){
-            throw  new NotFoundException("Teacher not Found, Registration Id: "+teacherApprove.getTeacherRegistrationId());
+        if (teacherOptional.isEmpty()) {
+            throw new NotFoundException("Teacher not Found, Registration Id: " + teacherApprove.getTeacherRegistrationId());
         }
         Teacher teacher = teacherOptional.get();
         teacher.setTeacherAcademicId(teacherAcademicId);
         teacher.setRoles(teacherApprove.getRole());
         teacher.setAccountEnabled(teacherApprove.getAccountEnabled());
-        if(teacherApprove.getApplicationStatus().equalsIgnoreCase("APPROVE") && teacherApprove.getAccountEnabled()){
+        if (teacherApprove.getApplicationStatus().equalsIgnoreCase("APPROVE") && teacherApprove.getAccountEnabled()) {
             teacher.setConfirmationDate(new ModelLocalDateTime(null));
         }
         teacher.setDepartment(teacherApprove.getDepartment());
@@ -89,21 +94,23 @@ public class TeacherService {
 
         return teacherRepository.save(teacher);
     }
-    public Teacher updateTeacherBasicInfo(Teacher teacher){
+
+    public Teacher updateTeacherBasicInfo(Teacher teacher) {
         Optional<Teacher> teacherOptional = teacherRepository.findById(teacher.getEmail());
-        if (teacherOptional.isEmpty()){
-            throw  new NotFoundException("User Email not found");
+        if (teacherOptional.isEmpty()) {
+            throw new NotFoundException("User Email not found");
         }
         Teacher dbTeacher = teacherOptional.get();
         String id = dbTeacher.getId();
-        BeanUtils.copyProperties(teacher,dbTeacher);
+        BeanUtils.copyProperties(teacher, dbTeacher);
         dbTeacher.setId(id);
         return teacherRepository.save(teacher);
     }
-    public Teacher updateTeacher(Teacher teacher){
+
+    public Teacher updateTeacher(Teacher teacher) {
         Optional<Teacher> teacherOptional = teacherRepository.findByTeacherId(teacher.getTeacherAcademicId());
-        if (teacherOptional.isEmpty()){
-            throw  new NotFoundException("Invalid teacher id, teacher id:"+teacher.getTeacherAcademicId());
+        if (teacherOptional.isEmpty()) {
+            throw new NotFoundException("Invalid teacher id, teacher id:" + teacher.getTeacherAcademicId());
         }
         Teacher dbTeacher = teacherOptional.get();
         String id = dbTeacher.getId();
@@ -111,52 +118,51 @@ public class TeacherService {
         teacher.setId(id);
         return teacherRepository.save(teacher);
     }
-    public Teacher findTeacherByRegistration(String teacherRegistrationId){
+
+    public Teacher findTeacherByRegistration(String teacherRegistrationId) {
         Optional<Teacher> teacherOptional = teacherRepository.findByRegistrationId(teacherRegistrationId);
-        if (teacherOptional.isEmpty()){
-            throw  new NotFoundException("Teacher not Found, Registration Id: "+teacherRegistrationId);
+        if (teacherOptional.isEmpty()) {
+            throw new NotFoundException("Teacher not Found, Registration Id: " + teacherRegistrationId);
         }
         return teacherOptional.get();
     }
 
-    public Teacher findTeacherByEmail(String teacherEmail){
+    public Teacher findTeacherByEmail(String teacherEmail) {
         Optional<Teacher> teacherOptional = teacherRepository.findByEmail(teacherEmail);
-        if (teacherOptional.isEmpty()){
-            throw  new NotFoundException("Teacher not Found, Email: "+teacherEmail);
+        if (teacherOptional.isEmpty()) {
+            throw new NotFoundException("Teacher not Found, Email: " + teacherEmail);
         }
         return teacherOptional.get();
     }
 
-    public Teacher findTeacherById(String id){
+    public Teacher findTeacherById(String id) {
         Optional<Teacher> teacherOptional = teacherRepository.findById(id);
-        if (teacherOptional.isEmpty()){
-            throw  new NotFoundException("Teacher not Found, BD ID: "+id);
+        if (teacherOptional.isEmpty()) {
+            throw new NotFoundException("Teacher not Found, BD ID: " + id);
         }
         return teacherOptional.get();
     }
 
-    public Teacher findTeacherByTeacherId(String teacherId){
+    public Teacher findTeacherByTeacherId(String teacherId) {
         Optional<Teacher> teacherOptional = teacherRepository.findByTeacherId(teacherId);
-        if (teacherOptional.isEmpty()){
-            throw  new NotFoundException("Teacher not Found, teacher ID: "+teacherId);
+        if (teacherOptional.isEmpty()) {
+            throw new NotFoundException("Teacher not Found, teacher ID: " + teacherId);
         }
         return teacherOptional.get();
     }
 
-    public List<Teacher> findAllTeacher(){
+    public List<Teacher> findAllTeacher() {
         return teacherRepository.findAll();
     }
+
     @Transactional
     public String nextTeacherId(String searchEmail, String institutionCode) {
         // Check if a teacher with the given email already exists
         List<Teacher> existingTeachersWithEmail = teacherRepository.findAllByInstitutionCode(institutionCode);
 
         if (!existingTeachersWithEmail.isEmpty()) {
-            for (Teacher singleTeacher:existingTeachersWithEmail ){
-                if (singleTeacher.getEmail() != null &&
-                        singleTeacher.getEmail().equalsIgnoreCase(searchEmail) &&
-                        singleTeacher.getTeacherAcademicId() != null &&
-                        !singleTeacher.getTeacherAcademicId().isEmpty()) {
+            for (Teacher singleTeacher : existingTeachersWithEmail) {
+                if (singleTeacher.getEmail() != null && singleTeacher.getEmail().equalsIgnoreCase(searchEmail) && singleTeacher.getTeacherAcademicId() != null && !singleTeacher.getTeacherAcademicId().isEmpty()) {
                     throw new RuntimeException("Teacher already has an academic ID");
                 }
             }
@@ -164,26 +170,19 @@ public class TeacherService {
 
         List<Teacher> teacherList = teacherRepository.findAll();
 
-        int maxTeacherId = teacherList.stream()
-                .filter(teacher -> teacher.getTeacherAcademicId() != null)
-                .mapToInt(teacher -> {
-                    try {
-                        return Integer.parseInt(teacher.getTeacherAcademicId());
-                    } catch (NumberFormatException e) {
-                        return 0;  // Return a default value or skip the value
-                    }
-                })
-                .max()
-                .orElse(GeneralConstants.TEACHER_INITIAL_ACADEMIC_ID);
+        int maxTeacherId = teacherList.stream().filter(teacher -> teacher.getTeacherAcademicId() != null).mapToInt(teacher -> {
+            try {
+                return Integer.parseInt(teacher.getTeacherAcademicId());
+            } catch (NumberFormatException e) {
+                return 0;  // Return a default value or skip the value
+            }
+        }).max().orElse(GeneralConstants.TEACHER_INITIAL_ACADEMIC_ID);
 
         return String.valueOf(maxTeacherId + 1);
     }
 
 
-
-
-
-    private void sendMail(String subject, String userEmail, String htmlContent, String text){
+    private void sendMail(String subject, String userEmail, String htmlContent, String text) {
         MailDto dto = new MailDto();
         dto.setSubject(subject);
         dto.setTextBody(text);
@@ -203,7 +202,7 @@ public class TeacherService {
             Teacher teacher = teacherOptional.get();
             teacherRepository.delete(teacher);
             String content = HtmlContentReplace.replaceHtmlDeleteContent(teacher.getFirstName() + " " + teacher.getLastName(), reason);
-            sendMail("Update on Your Application at Smart Campus", teacher.getEmail(),content,"Update on Your Application at Smart Campus");
+            sendMail("Update on Your Application at Smart Campus", teacher.getEmail(), content, "Update on Your Application at Smart Campus");
             return "Teacher with registration ID: " + registrationId + " deleted successfully.";
         } catch (Exception e) {
             throw new RuntimeException("Error deleting teacher with registration ID: " + registrationId, e);

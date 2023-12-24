@@ -30,6 +30,7 @@ public class CustomUserDetails implements UserDetails {
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private String id;
 	private String academicId;
+	private String institutionCode;
 	private String password;
 	private String email;
 	private String fullName;

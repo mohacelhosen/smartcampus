@@ -1,5 +1,9 @@
 package com.smartcampus.usermanagement.student.service;
 
+import com.smartcampus.Institution.model.Institution;
+import com.smartcampus.Institution.service.InstitutionService;
+import com.smartcampus.security.model.CustomUserDetails;
+import com.smartcampus.security.repository.UserRepository;
 import com.smartcampus.usermanagement.student.model.StudentEntity;
 import com.smartcampus.usermanagement.student.repository.StudentRepository;
 import com.smartcampus.admin.model.Admin;
@@ -11,6 +15,7 @@ import com.smartcampus.email.dto.MailDto;
 import com.smartcampus.email.service.EmailService;
 import com.smartcampus.exception.IncompleteDataException;
 import com.smartcampus.exception.NotFoundException;
+import com.smartcampus.usermanagement.teacher.model.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +25,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.LongStream;
 
 @Service
 public class StudentService {
@@ -28,28 +36,46 @@ public class StudentService {
     @Autowired
     private EmailService emailService;
     @Autowired
-    private AdminRepository adminRepository;
+    UserRepository userRepository;
+    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
+    @Autowired
+    private InstitutionService institutionService;
 
     public StudentEntity registerStudent(StudentEntity student) {
-        if (student == null){
+        if (student == null) {
             throw new RuntimeException("Student entity can't be null");
         }
-        if (student.getEmail() == null || student.getEmail().isEmpty()){
+        if (student.getEmail() == null || student.getEmail().isEmpty()) {
             throw new RuntimeException("Email Can't be Null !");
         }
+
+        Optional<StudentEntity> optionalStudent = studentRepository.findByEmail(student.getEmail());
+        if (optionalStudent.isPresent()) {
+            throw new RuntimeException("Student already Register with this email::" + student.getEmail());
+        }
+        Institution institution = institutionService.findByInstitutionByCode(student.getInstitutionCode());
+        student.setInstitutionName(institution.getInstitutionName());
+
         String registrationId = String.valueOf(UUID.randomUUID().getMostSignificantBits()).replace("-", "");
         student.setRegistrationId(registrationId);
         student.setCreateDate(new ModelLocalDateTime(null));
         StudentEntity saveStudent = studentRepository.save(student);
-        String content = HtmlContentReplace.replaceHtmlContent("student-registration", student.getFirstName(),student.getFirstName(),"Student", student.getEmail(),registrationId);
-        sendMail("Smart Campus Student Registration",student.getEmail(),content,"Your application is received");
 
-        List<Admin> adminList = adminRepository.findAll();
+        String content = HtmlContentReplace.replaceHtmlContent("student-registration", student.getFirstName(), student.getFirstName(), "Student", student.getEmail(), registrationId);
+        sendMail("Admission Application Received: " + saveStudent.getFirstName() + " for " + saveStudent.getStudyPlan().getDepartmentName() + " at Smart Campus", student.getEmail(), content, "Your application is received");
 
-        adminList.forEach(singleAdmin->{
-            String htmlContent = HtmlContentReplace.replaceHtmlContent("verify",singleAdmin.getFatherName(),student.getFirstName(),"Student", student.getEmail(),registrationId);
-            sendMail("ASSP verify Teacher "+student.getRegistrationId(),singleAdmin.getEmail(), htmlContent,"As soon as possible verify the student");
-        });
+        List<CustomUserDetails> facultyHiring = userRepository.findAllByAuthorities(Collections.singletonList("ROLE_ADMISSION_OFFICER"), student.getInstitutionCode());
+        if (facultyHiring.size() == 1) {
+            String htmlContent = HtmlContentReplace.replaceHtmlContent("verify", facultyHiring.get(0).getFullName(), saveStudent.getFirstName() + " " + student.getLastName(), "Student", saveStudent.getEmail(), registrationId);
+            sendMail("Action Needed: Verify Student Application ASAP- " + saveStudent.getRegistrationId(), facultyHiring.get(0).getEmail(), htmlContent, "Please update the teacher application");
+        } else {
+            for (CustomUserDetails facultyMember : facultyHiring) {
+                executorService.execute(() -> {
+                    String htmlContent = HtmlContentReplace.replaceHtmlContent("verify", facultyMember.getFullName(), saveStudent.getFirstName() + " " + student.getLastName(), "Student", saveStudent.getEmail(), registrationId);
+                    sendMail("Action Needed: Verify Student Application ASAP- " + saveStudent.getRegistrationId(), facultyMember.getEmail(), htmlContent, "Please update the teacher application");
+                });
+            }
+        }
         return saveStudent;
     }
 
@@ -61,8 +87,7 @@ public class StudentService {
 
         // Retrieve the existing student entity from the database
         Optional<StudentEntity> studentEntityOptional = studentRepository.findByStudentAcademicId(student.getStudentAcademicId());
-        StudentEntity dbStudent = studentEntityOptional.orElseThrow(() ->
-                new NotFoundException("Student not found with academic ID: " + student.getStudentAcademicId()));
+        StudentEntity dbStudent = studentEntityOptional.orElseThrow(() -> new NotFoundException("Student not found with academic ID: " + student.getStudentAcademicId()));
 
         // Update fields using reflection
         Field[] fields = student.getClass().getDeclaredFields();
@@ -88,7 +113,7 @@ public class StudentService {
         }
     }
 
-    private void sendMail(String subject, String userEmail, String htmlContent, String text){
+    private void sendMail(String subject, String userEmail, String htmlContent, String text) {
 
         MailDto dto = new MailDto();
         dto.setSubject(subject);
@@ -109,7 +134,7 @@ public class StudentService {
             StudentEntity student = studentEntityOptional.get();
             studentRepository.delete(student);
             String content = HtmlContentReplace.replaceHtmlDeleteContent(student.getFirstName() + " " + student.getLastName(), reason);
-            sendMail("Update on Your Application at Smart Campus", student.getEmail(),content,"Update on Your Application at Smart Campus");
+            sendMail("Update on Your Application at Smart Campus", student.getEmail(), content, "Update on Your Application at Smart Campus");
             return "Student with registration ID: " + registrationId + " deleted successfully.";
         } catch (Exception e) {
             throw new RuntimeException("Error deleting teacher with registration ID: " + registrationId, e);
@@ -120,13 +145,11 @@ public class StudentService {
         List<StudentEntity> totalStudentInDptAndSemester = studentRepository.findByDepartmentCodeAndSemesterNumber(departmentCode3Digit, semesterNumber);
 
         // Find the maximum student academic ID
-        Integer maxStudentAcademicId = totalStudentInDptAndSemester.stream()
-                .map(student -> Integer.parseInt(student.getStudentAcademicId()))
-                .max(Integer::compareTo) // Using method reference for comparison
+        Integer maxStudentAcademicId = totalStudentInDptAndSemester.stream().map(student -> Integer.parseInt(student.getStudentAcademicId())).max(Integer::compareTo) // Using method reference for comparison
                 .orElse(0); // Default value if the list is empty
 
         String last2DigitOfYear = String.valueOf(LocalDate.now().getYear()).substring(2);
-        if (maxStudentAcademicId == 0){
+        if (maxStudentAcademicId == 0) {
             return last2DigitOfYear + semesterTerm2Digit + departmentCode3Digit + GeneralConstants.STUDENT_INITIAL_ACADEMIC_ID + 1;
         } else {
             return String.valueOf(maxStudentAcademicId + 1);
@@ -134,5 +157,33 @@ public class StudentService {
     }
 
 
+    public Long nextStudentId(String searchEmail, String institutionCode, String departmentCode) {
+
+        // Check if a student with the given email already exists
+        List<StudentEntity> studentList = studentRepository.findByInstitutionCodeAndDepartmentCodeAndSemesterNumber(institutionCode, departmentCode, 1);
+
+        if (!studentList.isEmpty()) {
+            for (StudentEntity singleStudent : studentList) {
+                if (singleStudent.getEmail() != null && singleStudent.getEmail().equalsIgnoreCase(searchEmail) && singleStudent.getStudentAcademicId() != null && !singleStudent.getStudentAcademicId().isEmpty()) {
+                    throw new RuntimeException("Student already has an academic ID");
+                }
+            }
+        }
+
+        // Calculate the maximum student ID
+        long maxStudentId = studentList.stream()
+                .filter(student -> student.getStudentAcademicId() != null)
+                .mapToLong(student -> {
+                    try {
+                        return Long.parseLong(student.getStudentAcademicId());
+                    } catch (NumberFormatException e) {
+                        return 0;  // Return a default value or skip the value
+                    }
+                })
+                .max()
+                .orElse(0L);  // Return a default value if the stream is empty
+
+        return maxStudentId;  // Return the next available student ID
+    }
 
 }

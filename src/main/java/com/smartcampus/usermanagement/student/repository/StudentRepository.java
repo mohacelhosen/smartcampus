@@ -17,5 +17,8 @@ public interface StudentRepository extends MongoRepository<StudentEntity, String
     @Query("{'departmentCode':?0, 'semesterNumber': ?1 }")
     List<StudentEntity> findByDepartmentCodeAndSemesterNumber(String departmentCode, Integer semesterNumber);
 
+    @Query("{'institutionCode': ?0, 'departmentCode': ?1, 'semesterNumber': ?2}")
+    List<StudentEntity> findByInstitutionCodeAndDepartmentCodeAndSemesterNumber(String institutionCode, String departmentCode, Integer semesterNumber);
+
 }
 

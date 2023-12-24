@@ -11,11 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LocalGuardian {
 	private String localGuardianName;
-//    private FileDto localGuardianPhoto;
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private String localGuardianPhotoId;
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	private String localGuardianPhotoUrl;
 	private String relationship;
 	private String guardianOccupation;
 	private String emailOfLocalGuardian;

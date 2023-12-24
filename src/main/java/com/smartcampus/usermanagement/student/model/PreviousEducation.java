@@ -16,7 +16,5 @@ public class PreviousEducation {
 	private String graduationYear; // Year of graduation or completion
 	private String academicAchievements; // Notable academic achievements or honors
 	private String transcriptName;
-//    private FileDto transcript;      // Information about transcripts or academic records from the previous institution
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	private String transcriptsId;
+	private String transcriptUploadId;
 }

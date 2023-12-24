@@ -28,6 +28,7 @@ public class Department {
 	private String departmentShortName;
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private String departmentCode;
+	private Integer departmentCodeInNumber;
 	private Integer totalSemester;
 	List<Course> courseList;
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)

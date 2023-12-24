@@ -15,6 +15,4 @@ public class StudyPlan {
     private String departmentShortForm;
     private String departmentCode; // it must have a 3-digit code
     private Semester semester; // fall, winter, summer
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private String studyPlanStatus; // approved, pending, or under review
 }

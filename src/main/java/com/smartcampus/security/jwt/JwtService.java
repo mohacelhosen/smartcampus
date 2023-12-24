@@ -38,7 +38,7 @@ public class JwtService {
 	public String generateToken(String userId) {
 		Optional<CustomUserDetails> userEntity;
 		if (userId.contains("@")) {
-			userEntity = userRepository.findUserByEmail(userId);
+			userEntity = userRepository.findByEmail(userId);
 		} else {
 			userEntity = userRepository.findByAcademicId(userId);
 		}

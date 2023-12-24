@@ -25,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
 		Optional<CustomUserDetails> userEntity;
 		if (userId.contains("@")) {
-			userEntity = userRepository.findUserByEmail(userId);
+			userEntity = userRepository.findByEmail(userId);
 		} else {
 			userEntity = userRepository.findByAcademicId(userId);
 		}

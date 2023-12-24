@@ -38,13 +38,14 @@ public class AdminController {
 
     @PostMapping("/admin/register")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public ResponseEntity<Admin> register(@RequestBody Admin admin){
+    public ResponseEntity<Admin> register(@RequestBody Admin admin) {
         Admin registerAdmin = adminService.registerAdmin(admin);
         return new ResponseEntity<>(registerAdmin, HttpStatus.CREATED);
     }
+
     @PostMapping("/admin/update")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public ResponseEntity<Admin> update(@RequestBody Admin admin){
+    public ResponseEntity<Admin> update(@RequestBody Admin admin) {
         Admin registerAdmin = adminService.updateAdminInfo(admin);
         return new ResponseEntity<>(registerAdmin, HttpStatus.OK);
     }
@@ -84,12 +85,12 @@ public class AdminController {
 
     @PostMapping("/admin/approve-student")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_REGISTRAR')")
-    public ResponseEntity<ApiResponse<StudentEntity>> approveStudent(@RequestBody StudentApprove studentApprove){
+    public ResponseEntity<ApiResponse<StudentEntity>> approveStudent(@RequestBody StudentApprove studentApprove) {
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         ApiResponse<StudentEntity> response = new ApiResponse<>();
         response.setTimestamp(time);
         response.setEndpoint("/api/v1/university/admin/approve-student");
-        try{
+        try {
             StudentEntity student = adminService.approveStudentAndGenerateIdPassword(studentApprove);
             response.setData(student);
             response.setStatus(HttpStatus.OK.value());
@@ -97,7 +98,7 @@ public class AdminController {
             MDC.put("requestId", RequestId.generateRequestId());
             logger.info("AdminController::approveStudent, Successfully Approve Student .Timestamp: {}, teacher ID:{}", time, student.getRegistrationId());
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (NotFoundException e){
+        } catch (NotFoundException e) {
             response.setData(null);
             response.setStatus(HttpStatus.NOT_FOUND.value());
             response.setMessage(e.getMessage());
@@ -108,12 +109,12 @@ public class AdminController {
 
     @DeleteMapping("/admin/delete-student")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public ResponseEntity<ApiResponse<String>> deleteStudent(@RequestParam String registrationId, @RequestParam String reason){
+    public ResponseEntity<ApiResponse<String>> deleteStudent(@RequestParam String registrationId, @RequestParam String reason) {
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         ApiResponse<String> response = new ApiResponse<>();
         response.setTimestamp(time);
         response.setEndpoint("/api/v1/university/admin/delete-student");
-        try{
+        try {
             String accountStatus = studentService.deleteStudentAccountByRegistrationId(registrationId, reason);
             response.setData(null);
             response.setMessage(accountStatus);
@@ -122,7 +123,7 @@ public class AdminController {
             MDC.put("requestId", RequestId.generateRequestId());
             logger.info("AdminController::deleteStudent, Successfully deleted Student account.Timestamp: {}, teacher ID:{}", time, registrationId);
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (NotFoundException e){
+        } catch (NotFoundException e) {
             response.setData(null);
             response.setStatus(HttpStatus.NOT_FOUND.value());
             response.setMessage(e.getMessage());
@@ -130,14 +131,15 @@ public class AdminController {
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }
+
     @DeleteMapping("/admin/delete-teacher")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public ResponseEntity<ApiResponse<String>> deleteTeacher(@RequestParam String registrationId, @RequestParam String reason){
+    public ResponseEntity<ApiResponse<String>> deleteTeacher(@RequestParam String registrationId, @RequestParam String reason) {
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         ApiResponse<String> response = new ApiResponse<>();
         response.setTimestamp(time);
         response.setEndpoint("/api/v1/university/admin/delete-teacher");
-        try{
+        try {
             String accountStatus = teacherService.deleteTeacherAccountByRegistrationId(registrationId, reason);
             response.setData(null);
             response.setMessage(accountStatus);
@@ -146,7 +148,7 @@ public class AdminController {
             MDC.put("requestId", RequestId.generateRequestId());
             logger.info("AdminController::deleteTeacher, Successfully deleted Teacher account.Timestamp: {}, teacher ID:{}", time, registrationId);
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (NotFoundException e){
+        } catch (NotFoundException e) {
             response.setData(null);
             response.setStatus(HttpStatus.NOT_FOUND.value());
             response.setMessage(e.getMessage());
@@ -156,7 +158,7 @@ public class AdminController {
     }
 
     @PostMapping("/show-all-admin")
-    public ResponseEntity<ApiResponse<List<Admin>>> showAllAdmin(){
+    public ResponseEntity<ApiResponse<List<Admin>>> showAllAdmin() {
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         ApiResponse<List<Admin>> response = new ApiResponse<>();
         response.setTimestamp(time);
@@ -166,6 +168,36 @@ public class AdminController {
         response.setData(adminList);
         response.setStatus(HttpStatus.OK.value());
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/student-approve")
+    public ResponseEntity<ApiResponse<StudentEntity>> approveStudent(@RequestParam String studentRegistrationNumber) {
+        String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
+        ApiResponse<StudentEntity> response = new ApiResponse<>();
+        response.setTimestamp(time);
+        response.setEndpoint("/api/v1/university/admin/student-approve");
+        try {
+            StudentEntity student = adminService.approveStudent(studentRegistrationNumber);
+            response.setData(student);
+            response.setStatus(HttpStatus.OK.value());
+            // Log successful registration
+            MDC.put("requestId", RequestId.generateRequestId());
+            logger.info("AdminController::approveStudent, Successfully Approve Student .Timestamp: {}, student ID:{}", time, student.getStudentAcademicId());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (NotFoundException e) {
+            response.setData(null);
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage(e.getMessage());
+            logger.error("AdminController::approveStudent, Student not found .Timestamp:{}, Input: {}, Message: {}", time, studentRegistrationNumber, e.getMessage(), e);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } catch (RuntimeException e) {
+            // Handle the runtime exception from nextTeacherId method
+            response.setData(null);
+            response.setStatus(HttpStatus.BAD_REQUEST.value());  // Or another appropriate status code
+            response.setMessage(e.getMessage());  // Set the error message from the exception
+            logger.error("AdminController::approveStudent, Runtime Exception .Timestamp:{}, Input: {}, Message: {}", time, studentRegistrationNumber, e.getMessage(), e);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);  // Or another appropriate status code
+        }
     }
 
 }

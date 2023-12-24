@@ -107,13 +107,13 @@ public class DepartmentController {
     }
 
     @GetMapping("/find-by-department-code")
-    public ResponseEntity<ApiResponse<Department>> findDepartmentByCode(@RequestParam String departmentCode) {
+    public ResponseEntity<ApiResponse<Department>> findDepartmentByCode(@RequestParam String departmentCode, @RequestParam String institutionCode) {
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         ApiResponse<Department> response = new ApiResponse<>();
         response.setTimestamp(time);
         response.setEndpoint("/api/v1/university/department/find-by-department-code");
         try {
-            Department departmentInfo = departmentServie.findByDepartmentCode(departmentCode);
+            Department departmentInfo = departmentServie.findByDepartmentCode(departmentCode, institutionCode);
             response.setStatus(HttpStatus.OK.value());
             response.setMessage(" Successfully retriv  department");
             response.setData(departmentInfo);
@@ -163,13 +163,13 @@ public class DepartmentController {
     }
 
     @GetMapping("/remove-course-by-course-id")
-    public ResponseEntity<ApiResponse<Department>> removeCourseByCourseId(@RequestParam String departmentCode, @RequestParam String courseCode) {
+    public ResponseEntity<ApiResponse<Department>> removeCourseByCourseId(@RequestParam String departmentCode, @RequestParam String courseCode, @RequestParam String institutionCode) {
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
         ApiResponse<Department> response = new ApiResponse<>();
         response.setTimestamp(time);
         response.setEndpoint("/api/v1/university/department/remove-course-by-course-id");
         try {
-            Department department = departmentServie.removeCourseByCourseId( departmentCode,  courseCode);
+            Department department = departmentServie.removeCourseByCourseId( departmentCode,  courseCode, institutionCode);
             response.setStatus(HttpStatus.OK.value());
             response.setMessage(" Successfully retriv  department");
             response.setData(department);

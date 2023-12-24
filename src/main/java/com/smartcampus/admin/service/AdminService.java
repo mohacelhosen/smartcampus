@@ -2,15 +2,14 @@ package com.smartcampus.admin.service;
 
 import com.smartcampus.Institution.model.Institution;
 import com.smartcampus.Institution.service.InstitutionService;
-import com.smartcampus.common.GeneralConstants;
+import com.smartcampus.common.*;
+import com.smartcampus.department.model.Department;
+import com.smartcampus.department.repository.DepartmentRepository;
 import com.smartcampus.usermanagement.student.model.StudentEntity;
 import com.smartcampus.usermanagement.student.repository.StudentRepository;
 import com.smartcampus.usermanagement.student.service.StudentService;
 import com.smartcampus.admin.model.StudentApprove;
 import com.smartcampus.admin.model.TeacherApprove;
-import com.smartcampus.common.CustomUserObj;
-import com.smartcampus.common.HtmlContentReplace;
-import com.smartcampus.common.ModelLocalDateTime;
 import com.smartcampus.email.dto.MailDto;
 import com.smartcampus.email.service.EmailService;
 import com.smartcampus.exception.NotFoundException;
@@ -52,6 +51,9 @@ public class AdminService {
     private StudentService studentService;
     @Autowired
     private InstitutionService institutionService;
+    @Autowired
+    private DepartmentRepository departmentRepository;
+
     private ExecutorService executorService = Executors.newFixedThreadPool(10); // for a fixed thread pool with 10 threads
 
 
@@ -62,7 +64,7 @@ public class AdminService {
             Institution institution = institutionService.findByInstitutionByCode(admin.getInstitutionCode());
             List<Admin> institutionAdminList = adminRepository.findAllByInstitutionCode(admin.getInstitutionCode());
 
-            List<CustomUserDetails> superAdmin = userRepository.findAllByAuthorities(Collections.singletonList("ROLE_SUPER_ADMIN"));
+            List<CustomUserDetails> superAdmin = userRepository.findAllByAuthorities(Collections.singletonList("ROLE_SUPER_ADMIN"), admin.getInstitutionCode());
 
             AtomicLong nextAdminId = new AtomicLong(10002L);
             // Set the next academicId
@@ -186,10 +188,6 @@ public class AdminService {
         StudentEntity student = optionalStudent.get();
         if (applicationStatus.equalsIgnoreCase("APPROVE")) {
             student.setApplicationStatus(applicationStatus);
-            student.setEnabled(true);
-            student.setActivateBy(activateBy);
-            student.setVerificationBy(activateBy);
-
             CustomUserDetails cd = new CustomUserDetails();
             cd.setEmail(student.getEmail());
             cd.setAcademicId(studentAcademicId);
@@ -224,4 +222,47 @@ public class AdminService {
         return adminRepository.findAll();
     }
 
+    public StudentEntity approveStudent(String studentRegistrationNumber) {
+        Optional<StudentEntity> optionalStudent = studentRepository.findByRegistrationId(studentRegistrationNumber);
+        if (!optionalStudent.isPresent()){
+            throw new NotFoundException("Student Registration invalid: "+studentRegistrationNumber);
+        }
+        StudentEntity student = optionalStudent.get();
+        Optional<Department> departmentOptional = departmentRepository.findByDepartmentCodeAndInstitutionCode(student.getStudyPlan().getDepartmentCode(), student.getInstitutionCode());
+        if (!departmentOptional.isPresent()){
+            throw new NotFoundException("Department Not Found , Department Code:: "+student.getStudyPlan().getDepartmentCode()+"Institution Code:: "+student.getInstitutionCode());
+        }
+        Department department = departmentOptional.get();
+
+
+        Long lastStudentAcademicId = studentService.nextStudentId(student.getEmail(), student.getInstitutionCode(), department.getDepartmentCode());
+
+        String studentAcademicId = "";
+        if (lastStudentAcademicId==0){
+            studentAcademicId = IdGenerator.academicIdGenerator(student.getStudyPlan().getSemester().toString(), String.valueOf(department.getDepartmentCodeInNumber()), GeneralConstants.STUDENT_INITIAL_ACADEMIC_ID.toString());
+        }else {
+            studentAcademicId = String.valueOf(lastStudentAcademicId+1);
+        }
+
+
+
+        student.setStudentAcademicId(studentAcademicId);
+        StudentEntity saveStudent = studentRepository.save(student);
+
+        CustomUserDetails cd = new CustomUserDetails();
+        cd.setEmail(saveStudent.getEmail());
+        cd.setAcademicId(studentAcademicId);
+        cd.setRole("STUDENT");
+        cd.setFullName(saveStudent.getFirstName() + " " + saveStudent.getLastName());
+        CustomUserDetails register = userService.register(cd);
+
+        String content = HtmlContentReplace.replaceHtmlApproveContent(studentAcademicId, register.getPassword(), "TEACHER", register.getFullName());
+        sendMail("Official Approval: You're Now a Recognized Student with Us!", saveStudent.getEmail(), content, "Your application is approve. ID:" + studentAcademicId + ", password:" + register.getPassword());
+
+        if (saveStudent == null) {
+            throw new NotFoundException("Student not Found, Registration Id: " + student.getRegistrationId());
+        }
+
+        return saveStudent;
+    }
 }

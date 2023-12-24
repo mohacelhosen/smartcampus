@@ -33,6 +33,7 @@ public class GeneralConstants {
     public static final String ROLE_ALUMNI = "ROLE_ALUMNI";
     public static final String ROLE_FINANCIAL_AID_OFFICER = "ROLE_FINANCIAL_AID_OFFICER";
     public static final String ROLE_LIBRARIAN = "ROLE_LIBRARIAN";
+    public static final String ADMISSION_OFFICER = "ROLE_ADMISSION_OFFICER";
 
     /*** Announcement Types ***/
     public static final String CLASS_ANNOUNCEMENT = "CLASS_ANNOUNCEMENT";
@@ -40,5 +41,6 @@ public class GeneralConstants {
     public static final String HOLIDAY_ANNOUNCEMENT = "HOLIDAY_ANNOUNCEMENT";
     public static final String OFFICIAL_ANNOUNCEMENT = "OFFICIAL_ANNOUNCEMENT";
     public static final String TEACHER_ANNOUNCEMENT = "TEACHER_ANNOUNCEMENT";
+
 
 }
