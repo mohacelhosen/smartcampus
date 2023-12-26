@@ -210,4 +210,7 @@ public class TeacherService {
     }
 
 
+    public List<Teacher> findAllTeacherByInstitutionCode(String institutionCode){
+       return teacherRepository.findAllByInstitutionCode(institutionCode);
+    }
 }

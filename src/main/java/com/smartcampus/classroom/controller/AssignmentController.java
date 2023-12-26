@@ -1,20 +1,19 @@
 package com.smartcampus.classroom.controller;
 
+import com.smartcampus.admin.model.Admin;
+import com.smartcampus.common.ApiResponse;
+import com.smartcampus.common.ModelLocalDateTime;
+import com.smartcampus.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.smartcampus.classroom.model.Assignment;
 import com.smartcampus.classroom.model.Submission;
 import com.smartcampus.classroom.service.AssignmentService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/university/classroom/assignment")
@@ -67,6 +66,26 @@ public class AssignmentController {
 					: new ResponseEntity<>("Failed to delete assignment", HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@PostMapping("/show-all-assignment-by-class-id")
+	public ResponseEntity<ApiResponse<List<Assignment>>> showAllAssignmentByClassId(@RequestParam String classId) {
+		String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
+		ApiResponse<List<Assignment>> response = new ApiResponse<>();
+		response.setTimestamp(time);
+		response.setEndpoint("/api/v1/university/admin/show-all-assignment-by-class-id");
+		try{
+			List<Assignment> assignmentList = assignmentService.findAllAssignmentByClassId(classId);
+			response.setMessage("Successfully retrieve all the admin info");
+			response.setData(assignmentList);
+			response.setStatus(HttpStatus.OK.value());
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}catch (NotFoundException e) {
+			response.setData(null);
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+			response.setMessage(e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 	}
 }

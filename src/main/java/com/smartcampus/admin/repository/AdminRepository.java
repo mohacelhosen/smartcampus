@@ -14,4 +14,5 @@ public interface AdminRepository extends MongoRepository<Admin, String> {
     Optional<Admin> findByAcademicIdAndInstitutionCode(String academicId, String institutionCode);
     @Query("{'institutionCode':?0}")
     List<Admin> findAllByInstitutionCode(String institutionCode);
+    Optional<Admin> findByRegistrationId(String registrationId);
 }

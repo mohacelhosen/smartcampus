@@ -1,5 +1,6 @@
 package com.smartcampus.usermanagement.teacher.controller;
 
+import com.smartcampus.admin.model.Admin;
 import com.smartcampus.common.ApiResponse;
 import com.smartcampus.common.ModelLocalDateTime;
 import com.smartcampus.exception.AlreadyExistsException;
@@ -123,6 +124,19 @@ public class TeacherController {
         response.setMessage("Retrieve Successfully");
         response.setStatus(HttpStatus.OK.value());
         logger.info("TeacherController::getAllTeacher, teacher info retriv successfully. Timestamp:{}", time);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/show-all-teacher-by-institution-code")
+    public ResponseEntity<ApiResponse<List<Teacher>>> showAllTeacherByInstitutionCode(@RequestParam String institutionCode) {
+        String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
+        ApiResponse<List<Teacher>> response = new ApiResponse<>();
+        response.setTimestamp(time);
+        response.setEndpoint("/api/v1/university/admin/show-all-teacher-by-institution-code");
+        List<Teacher> teacherList = teacherService.findAllTeacherByInstitutionCode(institutionCode);
+        response.setMessage("Successfully retrieve all the admin info");
+        response.setData(teacherList);
+        response.setStatus(HttpStatus.OK.value());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

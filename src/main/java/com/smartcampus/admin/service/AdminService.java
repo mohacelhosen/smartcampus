@@ -25,10 +25,7 @@ import com.smartcampus.security.model.CustomUserDetails;
 import com.smartcampus.security.service.UserService;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
@@ -79,7 +76,7 @@ public class AdminService {
             } else {
                 admin.setAcademicId(admin.getInstitutionCode() + "-" + nextAdminId.get());
             }
-
+            admin.setRegistrationId(String.valueOf(UUID.randomUUID().getMostSignificantBits()).replace("-",""));
 
             Admin saveAdmin = adminRepository.save(admin);
 
@@ -264,5 +261,24 @@ public class AdminService {
         }
 
         return saveStudent;
+    }
+
+    public List<Admin> findAllByInstitutionCode(String institutionCode){
+        return adminRepository.findAllByInstitutionCode(institutionCode);
+    }
+
+    public Admin findByAcademicIdAndInstCode(String academicId, String institutionCode){
+        Optional<Admin> adminOptional = adminRepository.findByAcademicIdAndInstitutionCode(academicId, institutionCode);
+        if (!adminOptional.isPresent()){
+            throw new NotFoundException("Admin not found");
+        }
+        return adminOptional.get();
+    }
+    public Admin findByRegistrationId(String registrationId){
+        Optional<Admin> adminOptional = adminRepository.findByRegistrationId(registrationId);
+        if (!adminOptional.isPresent()){
+            throw new NotFoundException("Admin not found");
+        }
+        return adminOptional.get();
     }
 }

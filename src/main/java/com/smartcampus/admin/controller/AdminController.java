@@ -170,6 +170,60 @@ public class AdminController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PostMapping("/show-all-admin-by-institution-code")
+    public ResponseEntity<ApiResponse<List<Admin>>> showAllAdminByInstitutionCode(@RequestParam String institutionCode) {
+        String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
+        ApiResponse<List<Admin>> response = new ApiResponse<>();
+        response.setTimestamp(time);
+        response.setEndpoint("/api/v1/university/admin/show-all-admin-by-institution-code");
+        List<Admin> adminList = adminService.findAllByInstitutionCode(institutionCode);
+        response.setMessage("Successfully retrieve all the admin info");
+        response.setData(adminList);
+        response.setStatus(HttpStatus.OK.value());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/find-admin-by-institution-code-academic-id")
+    public ResponseEntity<ApiResponse<Admin>> findAdminByInstitutionCodeAndAcademicId(@RequestParam String institutionCode, @RequestParam String academicId) {
+        String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
+        ApiResponse<Admin> response = new ApiResponse<>();
+        response.setTimestamp(time);
+        response.setEndpoint("/api/v1/university/admin/find-admin-by-institution-code-academic-id");
+        try{
+            Admin admin = adminService.findByAcademicIdAndInstCode(academicId, institutionCode);
+            response.setMessage("Successfully retrieve the admin info");
+            response.setData(admin);
+            response.setStatus(HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (NotFoundException e) {
+            response.setData(null);
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage(e.getMessage());
+            logger.error("AdminController::findAdminByInstitutionCodeAndAcademicId, Student not found .Timestamp:{}, Input: {}, Message: {}", time, institutionCode+", "+academicId, e.getMessage(), e);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/find-admin-by-registration-id")
+    public ResponseEntity<ApiResponse<Admin>> findByRegistrationId(@RequestParam String registrationId) {
+        String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
+        ApiResponse<Admin> response = new ApiResponse<>();
+        response.setTimestamp(time);
+        response.setEndpoint("/api/v1/university/admin/find-admin-by-registration-id");
+        try{
+            Admin admin = adminService.findByRegistrationId(registrationId );
+            response.setMessage("Successfully retrieve the admin info");
+            response.setData(admin);
+            response.setStatus(HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (NotFoundException e) {
+            response.setData(null);
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage(e.getMessage());
+            logger.error("AdminController::findByRegistrationId, Student not found .Timestamp:{}, Input: {}, Message: {}", time, registrationId, e.getMessage(), e);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
     @PostMapping("/student-approve")
     public ResponseEntity<ApiResponse<StudentEntity>> approveStudent(@RequestParam String studentRegistrationNumber) {
         String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();

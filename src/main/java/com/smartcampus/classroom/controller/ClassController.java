@@ -6,6 +6,9 @@ import com.smartcampus.classroom.model.ClassAnnouncement;
 import com.smartcampus.classroom.service.ClassAnnouncementService;
 import com.smartcampus.common.ApiResponse;
 import com.smartcampus.common.ModelLocalDateTime;
+import com.smartcampus.exception.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,16 +29,31 @@ import com.smartcampus.classroom.service.SingleClassService;
 @RequestMapping("/api/v1/university/classroom")
 @CrossOrigin("*")
 public class ClassController {
+	private final  static Logger logger = LoggerFactory.getLogger(ClassController.class);
 	@Autowired
 	private SingleClassService singleClassService;
-
 	@Autowired
 	private ClassAnnouncementService classAnnouncementService;
 	@PostMapping("/register")
 //	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_TEACHER', 'ROLE_DEVELOPER')")
-	public ResponseEntity<SingleClass> registerSingleClass(@RequestBody SingleClass singleClass) {
-		SingleClass save = singleClassService.save(singleClass);
-		return new ResponseEntity<>(save, HttpStatus.OK);
+	public ResponseEntity<ApiResponse<SingleClass>> registerSingleClass(@RequestBody SingleClass singleClass) {
+		String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
+		ApiResponse<SingleClass> response = new ApiResponse<>();
+		response.setTimestamp(time);
+		response.setEndpoint("/api/v1/university/classroom/register");
+		try{
+			SingleClass savedClass = singleClassService.registerAClass(singleClass);
+			response.setStatus(HttpStatus.CREATED.value());
+			response.setData(savedClass);
+			response.setMessage("Class created Successfully");
+			return  new ResponseEntity<>(response, HttpStatus.CREATED);
+		}catch (NotFoundException e) {
+			response.setData(null);
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+			response.setMessage(e.getMessage());
+			logger.error("AdminController::registerSingleClass, Fail to create a class .Timestamp:{}, Input: {}, Message: {}", time, singleClass, e.getMessage(), e);
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+		}
 	}
 
 	@PostMapping("/delete-by-id")
@@ -87,13 +105,19 @@ public class ClassController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@GetMapping("/total-students/{classId}")
+	@GetMapping("/total-students")
 //	@PreAuthorize("hasAnyRole('ROLE_TEACHER','ROLE_STUDENT', 'ROLE_ADMIN','ROLE_DEVELOPER')")
 	public ResponseEntity<List<StudentInfoForClassRoom>> singleClassStudents(@RequestParam String classId, @RequestParam String institutionCode) {
 		List<StudentInfoForClassRoom> response = singleClassService.singleClassStudents(classId, institutionCode);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
+	@GetMapping("/total-students/{classId}")
+//	@PreAuthorize("hasAnyRole('ROLE_TEACHER','ROLE_STUDENT', 'ROLE_ADMIN','ROLE_DEVELOPER')")
+	public ResponseEntity<List<StudentInfoForClassRoom>> singleClassStudents(@RequestParam String classId) {
+		List<StudentInfoForClassRoom> response = singleClassService.singleClassStudents(classId);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
 	@PostMapping("/create-class-announcement")
 	public ResponseEntity<ApiResponse<ClassAnnouncement>> createAnnouncement(@RequestBody ClassAnnouncement classAnnouncement) {
 		String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();

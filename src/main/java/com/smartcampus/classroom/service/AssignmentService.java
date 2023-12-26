@@ -3,6 +3,7 @@ package com.smartcampus.classroom.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.smartcampus.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -92,13 +93,21 @@ public class AssignmentService {
 			List<String> dbAssignmentList = dbClass.getAssignmentList();
 			dbAssignmentList.remove(assignmentId);
 			dbClass.setAssignmentList(dbAssignmentList);
-			singleClassService.save(dbClass);
+			singleClassService.registerAClass(dbClass);
 			assignmentRepository.deleteById(assignmentId);
 			return true;
 		} catch (Exception e) {
 			throw new RuntimeException("Message: Invalid class id or Assignment id");
 		}
 
+	}
+
+	public List<Assignment> findAllAssignmentByClassId(String classId){
+		SingleClass singleClass = singleClassService.findSingleClass(classId);
+		if (singleClass !=null){
+		return assignmentRepository.findAllByClassId(classId);}else {
+			throw new NotFoundException("Class Not Found");
+		}
 	}
 
 }

@@ -1,11 +1,14 @@
 package com.smartcampus.classroom.service;
 
+import java.lang.instrument.Instrumentation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import com.smartcampus.Institution.model.Institution;
+import com.smartcampus.Institution.service.InstitutionService;
 import com.smartcampus.course.model.Course;
 import com.smartcampus.course.service.CourseService;
 import com.smartcampus.exception.NotFoundException;
@@ -31,6 +34,8 @@ public class SingleClassService {
 
 	@Autowired
 	private TeacherService teacherService;
+	@Autowired
+	private InstitutionService institutionService;
 
 
 	/***
@@ -47,7 +52,7 @@ public class SingleClassService {
 	 "classCreatedBy": "Md. Mohacel Hosen"
 	 }
 	 */
-	public SingleClass save(SingleClass singleClass) {
+	public SingleClass registerAClass(SingleClass singleClass) {
 		String classCode = String.valueOf(UUID.randomUUID().getMostSignificantBits()).replace("-", "");
 		singleClass.setClassJoinCode(classCode);
 		Course dbCourse = courseService.findByCourseCode(singleClass.getCourseCode(), singleClass.getInstitutionCode());
@@ -55,9 +60,13 @@ public class SingleClassService {
 			throw new NotFoundException("Invalid course courseCode: " + singleClass.getCourseCode());
 		}
 
-		Teacher teacher = teacherService.findTeacherByRegistration(singleClass.getTeacherByRegistrationId());
+		Teacher teacher = teacherService.findTeacherByRegistration(singleClass.getTeacherRegistrationId());
 		if (teacher == null){
-			throw new NotFoundException("Invalid teacher registration id: " + singleClass.getCourseCode());
+			throw new NotFoundException("Invalid teacher registration id: " + singleClass.getTeacherRegistrationId());
+		}
+		Institution institution = institutionService.findByInstitutionByCode(singleClass.getInstitutionCode());
+		if (institution == null){
+			throw new NotFoundException("Invalid institution code : " + singleClass.getInstitutionCode());
 		}
 		return singleClassRepository.save(singleClass);
 	}
@@ -70,8 +79,8 @@ public class SingleClassService {
 			SingleClass dbClass = optionalDbClass.get();
 
 			// Update only the necessary fields
-			if (updatedClass.getTeacherByRegistrationId() != null && !updatedClass.getTeacherByRegistrationId().isEmpty()) {
-				dbClass.setTeacherByRegistrationId(updatedClass.getTeacherByRegistrationId());
+			if (updatedClass.getTeacherRegistrationId() != null && !updatedClass.getTeacherRegistrationId().isEmpty()) {
+				dbClass.setTeacherRegistrationId(updatedClass.getTeacherRegistrationId());
 			}
 
 			if (updatedClass.getClassTitle() != null && !updatedClass.getClassTitle().isEmpty()) {
@@ -194,6 +203,20 @@ public class SingleClassService {
 
 	public List<StudentInfoForClassRoom> singleClassStudents(String classId, String institutionCode) {
 		List<SingleClass> classes = singleClassRepository.findAllStudentIdsAndNames(classId, institutionCode);
+
+		List<StudentInfoForClassRoom> studentInfoList = new ArrayList<>();
+
+		for (SingleClass singleClass : classes) {
+			Set<StudentInfoForClassRoom> students = singleClass.getStudents();
+			for (StudentInfoForClassRoom student : students) {
+				studentInfoList.add(student);
+			}
+		}
+		return studentInfoList;
+	}
+
+	public List<StudentInfoForClassRoom> singleClassStudents(String classId ) {
+		List<SingleClass> classes = singleClassRepository.findAllStudentIdsAndNames(classId);
 
 		List<StudentInfoForClassRoom> studentInfoList = new ArrayList<>();
 

@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class SingleClass {
 	@Id
 	private String id;
-	private String teacherByRegistrationId;
+	private String teacherRegistrationId;
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private String classJoinCode;
 	private String classTitle;// courseTitle

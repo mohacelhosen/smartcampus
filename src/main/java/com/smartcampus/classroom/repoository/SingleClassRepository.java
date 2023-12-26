@@ -20,4 +20,7 @@ public interface SingleClassRepository extends MongoRepository<SingleClass, Stri
 	@Query(value = "{'id': ?0,'institutionCode':?1, 'students.academicId': {$exists: true}}", fields = "{'students.academicId': 1, 'students.studentName': 1}")
 	List<SingleClass> findAllStudentIdsAndNames(String classId, String institutionCode);
 
+	@Query(value = "{'id': ?0, 'students.academicId': {$exists: true}}", fields = "{'students.academicId': 1, 'students.studentName': 1}")
+	List<SingleClass> findAllStudentIdsAndNames(String classId );
+
 }
