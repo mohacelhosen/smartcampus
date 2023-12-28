@@ -1,8 +1,13 @@
-version: '0.0.1'
+version: '3'
+
 services:
-  web:
-    build: .
-    platform: 
-      linux/x86_64
+  myapp:
+    image: eclipse-temurin:17-jdk-alpine
+    volumes:
+      - /tmp
     ports:
       - "9090:9090"
+    entrypoint:
+      - "java"
+      - "-jar"
+      - "/app.jar"
