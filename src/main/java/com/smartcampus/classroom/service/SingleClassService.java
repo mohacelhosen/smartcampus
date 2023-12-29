@@ -1,11 +1,7 @@
 package com.smartcampus.classroom.service;
 
 import java.lang.instrument.Instrumentation;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import com.smartcampus.Institution.model.Institution;
 import com.smartcampus.Institution.service.InstitutionService;
@@ -169,12 +165,14 @@ public class SingleClassService {
 		if (optionalDbClass.isPresent()) {
 			SingleClass dbClass = optionalDbClass.get();
 
+			// Ensure the students set is initialized
+			Set<StudentInfoForClassRoom> students = dbClass.getStudents() != null ? dbClass.getStudents() : new HashSet<>();
+
 			// Check if the student with the given academicId is already in the class
-			boolean isStudentAlreadyJoined = dbClass.getStudents().stream()
+			boolean isStudentAlreadyJoined = students.stream()
 					.anyMatch(student -> student.getAcademicId().equals(joinForClass.getAcademicId()));
 
 			if (!isStudentAlreadyJoined) {
-				Set<StudentInfoForClassRoom> students = dbClass.getStudents();
 				StudentInfoForClassRoom student = new StudentInfoForClassRoom();
 				student.setAcademicId(joinForClass.getAcademicId());
 				student.setStudentName(joinForClass.getStudentName());

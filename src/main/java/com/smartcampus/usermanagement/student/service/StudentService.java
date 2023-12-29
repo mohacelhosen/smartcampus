@@ -187,10 +187,18 @@ public class StudentService {
     }
 
     public StudentEntity findByRegistrationId(String studentRegistrationId) {
-        Optional<StudentEntity> studentEntity = studentRepository.findByRegistrationId(studentRegistrationId);
-        if(!studentEntity.isPresent()){
-            throw new NotFoundException("Invalid Registration id::"+studentRegistrationId);
+        int length = studentRegistrationId.length();
+        Optional<StudentEntity> studentEntity;
+        if(length>15){
+            studentEntity = studentRepository.findByRegistrationId(studentRegistrationId);
+        }else{
+            studentEntity = studentRepository.findByStudentAcademicId(studentRegistrationId);
         }
+
+        if(!studentEntity.isPresent()){
+            throw new NotFoundException("Invalid  id::"+studentRegistrationId);
+        }
+
         return studentEntity.get();
     }
 }
