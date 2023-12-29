@@ -1,5 +1,6 @@
 package com.smartcampus.usermanagement.student.controller;
 
+import com.smartcampus.exception.NotFoundException;
 import com.smartcampus.usermanagement.student.model.StudentEntity;
 import com.smartcampus.usermanagement.student.service.StudentService;
 import com.smartcampus.common.ApiResponse;
@@ -38,6 +39,30 @@ public class StudentController {
             response.setData(null);
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @GetMapping("/find-by-registration")
+    public ResponseEntity<ApiResponse<StudentEntity>> register(@RequestParam String  studentRegistrationId){
+        ApiResponse<StudentEntity> response = new ApiResponse<>();
+        String time = new ModelLocalDateTime(null).getLocalDateTimeStringAMPM();
+        String requestid = RequestId.generateRequestId();
+        response.setTimestamp(time);
+        response.setEndpoint("/api/v1/university/student/find-by-registration");
+
+        try {
+            StudentEntity registerStudent = studentService.findByRegistrationId(studentRegistrationId);
+            response.setData(registerStudent);
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("Student Information retrieve Successfully !");
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        }
+        catch (NotFoundException e ){
+            response.setMessage(e.getMessage());
+            response.setData(null);
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
         }
 
     }

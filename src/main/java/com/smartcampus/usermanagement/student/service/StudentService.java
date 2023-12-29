@@ -186,4 +186,11 @@ public class StudentService {
         return maxStudentId;  // Return the next available student ID
     }
 
+    public StudentEntity findByRegistrationId(String studentRegistrationId) {
+        Optional<StudentEntity> studentEntity = studentRepository.findByRegistrationId(studentRegistrationId);
+        if(!studentEntity.isPresent()){
+            throw new NotFoundException("Invalid Registration id::"+studentRegistrationId);
+        }
+        return studentEntity.get();
+    }
 }
